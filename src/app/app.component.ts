@@ -4,6 +4,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { AuthService } from '../shared/services/auth.service';
+import { UsuarioService } from '../shared/services/usuario.service';
 
 @Component({
   templateUrl: 'app.html'
@@ -18,7 +19,8 @@ export class MyApp {
   constructor(public platform: Platform, 
               public statusBar: StatusBar, 
               public splashScreen: SplashScreen,
-              private auth: AuthService) {
+              private auth: AuthService,
+              private usuarioService: UsuarioService) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
@@ -26,10 +28,11 @@ export class MyApp {
       { title: 'Login', component: 'LoginPage' },
       { title: 'Registro', component: 'RegistroPage' },
       { title: 'Home', component: 'HomePage' },
-      { title: 'List', component: 'ListPage' }
+      { title: 'List', component: 'ListPage' },
+      { title: 'Logout', component: 'LoginPage' }
     ];
 
-    if (this.auth.isAutenticado()) {
+    if (!this.auth.isAutenticado()) {
         this.rootPage = 'LoginPage';
     } else {
         this.rootPage = 'HomePage';
@@ -49,6 +52,13 @@ export class MyApp {
   openPage(page) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
+    if (page.title === 'Logout') {
+      this.logout();
+    }
     this.nav.setRoot(page.component);
+  }
+
+  logout() {
+    this.usuarioService.logout();
   }
 }
