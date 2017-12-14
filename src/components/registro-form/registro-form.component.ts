@@ -3,6 +3,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Conta } from '../../shared/models/conta.interface';
 
 import { UsuarioService } from '../../shared/services/usuario.service';
+import { NavController } from 'ionic-angular/navigation/nav-controller';
 
 @Component({
   selector: 'app-registro-form',
@@ -13,7 +14,8 @@ export class RegistroFormComponent implements OnInit {
   @Output() registroStatus: EventEmitter<{success: Boolean, message: string, error: string}>;
   conta = {} as Conta;
   
-  constructor(private usuarioService: UsuarioService) { 
+  constructor(private usuarioService: UsuarioService,
+              private navCtrl: NavController) { 
     this.registroStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
   }
 
@@ -30,6 +32,10 @@ export class RegistroFormComponent implements OnInit {
     const senha = this.conta.senha;
     const nome = this.conta.nome;
     this.usuarioService.registrarUsuario(email, senha, nome);
+  }
+
+  navigateToLoginPage() {
+    this.navCtrl.setRoot('LoginPage');
   }
 
 }

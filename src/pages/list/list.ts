@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { AuthService } from '../../shared/services/auth.service';
 
 @IonicPage()
 @Component({
@@ -11,7 +12,9 @@ export class ListPage {
   icons: string[];
   items: Array<{title: string, note: string, icon: string}>;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, 
+              public navParams: NavParams,
+              private auth: AuthService) {
     // If we navigated to this page, we will have an item available as a nav param
     this.selectedItem = navParams.get('item');
 
@@ -34,5 +37,13 @@ export class ListPage {
     this.navCtrl.push('ListPage', {
       item: item
     });
+  }
+
+  ionViewCanEnter() {
+    if (this.auth.isAutenticado()) {
+      return true;
+    }
+    this.navCtrl.setRoot('LoginPage');
+    return false;
   }
 }

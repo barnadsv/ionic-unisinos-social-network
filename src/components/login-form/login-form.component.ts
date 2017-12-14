@@ -3,6 +3,7 @@ import { Component, Output, OnInit, EventEmitter } from '@angular/core';
 import { Conta } from '../../shared/models/conta.interface';
 
 import { UsuarioService } from '../../shared/services/usuario.service';
+import { NavController } from 'ionic-angular/navigation/nav-controller';
 
 @Component({
   selector: 'app-login-form',
@@ -13,7 +14,8 @@ export class LoginFormComponent implements OnInit {
   @Output() loginStatus: EventEmitter<{success: Boolean, message: string, error: string}>;
   conta = {} as Conta;
 
-  constructor(private usuarioService: UsuarioService) { 
+  constructor(private usuarioService: UsuarioService,
+              private navCtrl: NavController) { 
     this.loginStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
   }
 
@@ -22,39 +24,8 @@ export class LoginFormComponent implements OnInit {
       (resposta) => {
         this.loginStatus.emit(resposta);
       }
-  );
-    // }
-      // ngOnInit() {
-      // this.usuarioService.loginMessage.subscribe(
-      //   (resposta) => {
-      //     // this.ngProgress.done();
-      //     if (resposta.success) {
-      //       //this.toastr.success(resposta.message);
-      //       this.toast.create({
-      //         message: resposta.message,
-      //         duration: 3000
-      //       }).present();
-      //       //this.router.navigate(['/feeds']);
-      //       this.navCtrl.push('FeedsPage');
-      //     } else {
-      //       //this.loggingService.logInfo(resposta.error);
-      //       if (resposta.error === 'auth/email-senha-errados') {
-      //         //this.toastr.error('Email/Senha errados.');
-      //         this.toast.create({
-      //           message: 'Email/Senha errados.',
-      //           duration: 3000
-      //         }).present();
-      //       } else {
-      //         //this.toastr.error(resposta.message);
-      //         this.toast.create({
-      //           message: resposta.message,
-      //           duration: 3000
-      //         }).present();
-      //       }
-      //     }
-      //   }
-      // );
-      }
+    );
+  }
 
   login() {
     const email = this.conta.email;
@@ -63,7 +34,7 @@ export class LoginFormComponent implements OnInit {
   }
 
   navigateToRegistroPage() {
-    // this.navCtrl.push('RegisterPage');
+    this.navCtrl.setRoot('RegistroPage');
   }
 }
 
