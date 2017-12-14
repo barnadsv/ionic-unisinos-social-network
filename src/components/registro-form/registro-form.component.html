@@ -1,0 +1,65 @@
+
+<!-- <div class="row">
+    <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+      <form (ngSubmit)="onRegistro(f)" #f="ngForm">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="nome" id="nome" name="nome" class="form-control" ngModel>
+        </div> 
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" class="form-control" ngModel>
+        </div>  
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input type="password" id="password" name="password" class="form-control" ngModel>
+        </div>
+        <button class="btn btn-primary" type="submit">Registrar</button>
+      </form>
+    </div>
+  </div> -->
+<form #registroForm="ngForm" novalidate>
+  <ion-card>
+    <ion-card-content>
+      <ion-item>
+        <ion-label floating>Nome</ion-label>
+        <ion-input 
+          [(ngModel)]="conta.nome" 
+          type="text" 
+          name="nome" 
+          #nome="ngModel" 
+          required></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>E-mail</ion-label>
+        <ion-input 
+          [(ngModel)]="conta.email" 
+          type="email" 
+          name="email" 
+          #email="ngModel" 
+          required
+          email></ion-input>
+      </ion-item>
+      <div padding *ngIf="email.invalid && email.dirty">
+        <span class="global__input-error">E-mail não é válido.</span>
+      </div>
+      <ion-item>
+        <ion-label floating>Senha</ion-label>
+        <ion-input 
+          [(ngModel)]="conta.senha" 
+          type="password" 
+          name="senha" 
+          #senha="ngModel" 
+          required 
+          pattern="[a-zA-Z0-9!@#$%^&*]{6,20}$"></ion-input>
+      </ion-item>
+      <div padding *ngIf="senha.invalid && senha.dirty">
+        <span class="global__input-error">A senha deve ter de 6 a 20 caracteres.</span>
+      </div>
+    </ion-card-content>
+    <ion-row class="registro-form__button">
+      <button ion-button (click)="registrar()" [disabled]="registroForm.invalid">Registrar</button>
+    </ion-row>
+  </ion-card>
+</form>
+  

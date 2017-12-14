@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicModule } from 'ionic-angular';
 import { LoginFormComponent } from './login-form/login-form.component';
-// import { RegistroFormComponent } from './registro-form/registro-form.component';
+import { RegistroFormComponent } from './registro-form/registro-form.component';
 // import { ContatoItemComponent } from './contatos/contato-list/contato-item/contato-item.component';
 // import { ContatoListComponent } from './contatos/contato-list/contato-list.component';
 // import { ContatoSearchComponent } from './contatos/contato-search/contato-search.component';
@@ -15,7 +15,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
 @NgModule({
     declarations: [
         LoginFormComponent,
-        // RegistroFormComponent,
+        RegistroFormComponent,
         // ContatoItemComponent,
         // ContatoListComponent,
         // ContatoSearchComponent,
@@ -29,7 +29,7 @@ import { LoginFormComponent } from './login-form/login-form.component';
     imports: [IonicModule],
     exports: [
         LoginFormComponent,
-        // RegistroFormComponent,
+        RegistroFormComponent,
         // ContatoItemComponent,
         // ContatoListComponent,
         // ContatoSearchComponent,
