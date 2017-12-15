@@ -76,6 +76,12 @@ export class FeedService {
                     feedAlterado.idFeedOriginal = feedAlterado.id;
                     feedAlterado.id = id;
                 }
+                if (typeof feedAlterado.privado === 'undefined') {
+                    feedAlterado.privado = false;
+                }
+                if (typeof feedAlterado.compartilhar === 'undefined') {
+                    feedAlterado.compartilhar = false;
+                }
                 this.feeds.push(feedAlterado);
                 localStorage.setItem('feeds', JSON.stringify(this.feeds));
                 this.feedsAlterados.next(this.feeds.slice());

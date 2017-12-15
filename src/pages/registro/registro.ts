@@ -19,8 +19,7 @@ export class RegistroPage {
         message: resposta.message,
         duration: 3000
       }).present();
-      // this.navCtrl.push('FeedsPage');
-      this.navCtrl.setRoot('HomePage');
+      this.navCtrl.setRoot('FeedsPage');
     } else {
       if (resposta.error === 'auth/email-ja-cadastrado') {
         this.toast.create({

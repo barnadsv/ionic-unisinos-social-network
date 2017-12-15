@@ -29,15 +29,13 @@ export class MyApp {
       { title: 'Registro', component: 'RegistroPage' },
       { title: 'Feeds', component: 'FeedsPage' },
       { title: 'Contatos', component: 'ContatosPage' },
-      { title: 'Home', component: 'HomePage' },
-      { title: 'List', component: 'ListPage' },
       { title: 'Logout', component: 'LoginPage' }
     ];
 
     if (!this.auth.isAutenticado()) {
         this.rootPage = 'LoginPage';
     } else {
-        this.rootPage = 'HomePage';
+        this.rootPage = 'FeedsPage';
     };
 
   }
