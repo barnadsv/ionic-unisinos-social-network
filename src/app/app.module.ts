@@ -12,6 +12,8 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../shared/services/auth.service';
 import { UsuarioService } from '../shared/services/usuario.service';
+import { ContatoService } from '../shared/services/contato.service';
+import { ContatoSearchService } from '../components/contatos/contato-search/contato-search.service';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { UsuarioService } from '../shared/services/usuario.service';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthService,
-    UsuarioService
+    UsuarioService,
+    ContatoService,
+    ContatoSearchService
   ]
 })
 export class AppModule {}

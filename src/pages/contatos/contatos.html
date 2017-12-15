@@ -1,0 +1,16 @@
+<ion-header>
+    <ion-navbar color="primary">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Contatos</ion-title>
+    </ion-navbar>
+</ion-header>
+    
+    
+<ion-content padding>
+
+    <app-contato-list (apagarContatoStatus)="apagarContato($event)"></app-contato-list>
+    <app-contato-search (adicionarContatoStatus)="adicionarContato($event)"></app-contato-search>
+
+</ion-content>

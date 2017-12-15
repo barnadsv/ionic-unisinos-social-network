@@ -1,0 +1,12 @@
+<!-- <div class="list-group-item clearfix">
+    <p class="pull-left">{{ contato.nome }}</p>
+    <span style="cursor: pointer;" class="badge badge-danger badge-pill" (click)="onApagarContato(contato)">REMOVER</span>
+</div> -->
+<ion-item>
+    {{ contato.nome }}
+    <!-- <button ion-button icon-only (click)="onApagarContato(contato)" item-end> -->
+        <ion-icon class="remove-icon" name="remove-circle" (click)="onApagarContato(contato)" style="cursor: pointer;" item-end></ion-icon>
+    <!-- </button> -->
+</ion-item>
+
+

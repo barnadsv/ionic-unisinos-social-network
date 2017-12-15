@@ -1,0 +1,21 @@
+<ion-card>
+        
+    <ion-card-header>
+        Busca por contato
+    </ion-card-header>
+
+    <ion-card-content>
+        <ion-item>
+            <ion-input [(ngModel)]="termo"  name="termo" type="text" [(value)]="termoDigitado" (keyup)="searchTerm($event.target.value)" placeholder="Digite o nome de um contato"></ion-input>
+        </ion-item>
+        <hr>
+        <ion-list  *ngIf="resultados?.length > 0" inset>
+            <h5>Selecione um usuário para adicioná-lo como contato</h5>
+            <button ion-item *ngFor="let resultado of resultados | slice:0:9" (click)="onAdicionarContato(resultado)">
+                {{ resultado.nome }}
+            </button> 
+        </ion-list>
+    </ion-card-content>
+
+</ion-card>
+
