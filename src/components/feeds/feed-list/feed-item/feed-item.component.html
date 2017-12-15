@@ -1,252 +1,151 @@
 <ng-template [ngIf]="feed.usuarioCompartilhou !== undefined">
-    <ion-item>
-        <div class="compartilhamento" [ngClass]="{'alert-info': feed.usuarioCompartilhou.email === usuarioAutenticado.email}">
-            <ng-template [ngIf]="feed.usuarioCompartilhou.email === usuarioAutenticado.email">
-                <h6><mark>Compartilhado por: mim</mark> em {{ feed.dataCompartilhamento | date: 'short' }}</h6>
+
+    <ion-card class="compartilhamento" [ngClass]="{'alert-info': feed.usuarioCompartilhou.email === usuarioAutenticado.email}">
+
+        <ng-template [ngIf]="feed.usuarioCompartilhou.email === usuarioAutenticado.email">
+            <ion-item class="alert-info">
+                <h2>Compartilhado por: mim</h2>
+                <p center text-center>{{ dataCompartilhamentoDif }}</p>
+            </ion-item>
+        </ng-template>
+        <ng-template [ngIf]="feed.usuarioCompartilhou.email !== usuarioAutenticado.email">
+            <ion-item>
+                <h2>Compartilhado por: {{ feed.usuarioCompartilhou.nome }}</h2>
+                <!-- <p center text-center> em {{ feed.dataCompartilhamento | date: 'short' }}</p> -->
+                <p center text-center>{{ dataCompartilhamentoDif }}</p>
+            </ion-item>
+        </ng-template>
+        <ion-card [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
+            <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
+                <ion-item class="alert-info">
+                    <h2>Publicado por: mim</h2>
+                    <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
+                    <p center text-center>{{ dataCriacaoDif }}</p>
+                </ion-item>
+                <img [src]="feed.imagem"/>
+                <ion-card-header>
+                    {{ feed.titulo }}
+                </ion-card-header>
+                <ion-card-content>
+                    {{ feed.texto }}
+                </ion-card-content>
             </ng-template>
-            <ng-template [ngIf]="feed.usuarioCompartilhou.email !== usuarioAutenticado.email">
-                <h6><mark>Compartilhado por: {{ feed.usuarioCompartilhou.nome }}</mark> em {{ feed.dataCompartilhamento | date: 'short' }}</h6>
+
+            <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
+                <ion-item>
+                    <h2>Publicado por: {{ feed.usuario.nome }}</h2>
+                    <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
+                    <p center text-center>{{ dataCriacaoDif }}</p>
+                </ion-item>
+                <img [src]="feed.imagem"/>
+                <ion-card-header>
+                    {{ feed.titulo }}
+                </ion-card-header>
+                <ion-card-content>
+                    {{ feed.texto }}
+                </ion-card-content>
             </ng-template>
-            <div [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-                    <a 
-                        style="cursor: pointer;"
-                        (click)="navigateToFeedEdit(feed.id)"
-                        class="list-group-item clearfix"
-                        [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                        <div class="pull-left">
-                            <h6><mark>Publicado por: mim</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                            <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                            <p class="list-group-item-text">{{ feed.texto }}</p>
-                        </div>
-                        <ion-thumbnail item-end>
-                            <img [src]="feed.imagem" alt="{{ feed.titulo }}">
-                        </ion-thumbnail>
-                    </a>
-                </ng-template>
-                <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-                    <a 
-                        class="list-group-item clearfix"
-                        [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                        <div class="pull-left">
-                            <h6><mark>Publicado por: {{ feed.usuario.nome }}</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                            <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                            <p class="list-group-item-text">{{ feed.texto }}</p>
-                        </div>
-                        <ion-thumbnail item-end>
-                            <img [src]="feed.imagem" alt="{{ feed.titulo }}">
-                        </ion-thumbnail>
-                    </a>
-                </ng-template>
-                <div class="list-group-item clearfix"
-                    [ngClass]="{'list-group-item-info': feed.usuario.email === usuarioAutenticado.email}">
+
+            <ion-row wrap right [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
+                <ion-col>
                     <ng-template [ngIf]="feed.privado === true">
-                        <!-- <span class="label label-danger">PRIVADO</span> -->
                         <ion-badge color="danger">PRIVADO</ion-badge>
                     </ng-template>
                     <ng-template [ngIf]="feed.privado === false">
-                        <!-- <span class="label label-primary">PÚBLICO</span> -->
                         <ion-badge color="success">PÚBLICO</ion-badge>
                     </ng-template>
+                </ion-col>
+                <ion-col>
                     <ng-template [ngIf]="feed.compartilhar === false">
-                        <!-- <span class="badge badge-danger badge-pill">PROIBIDO COMPARTILHAR</span> -->
-                        <span ion-button color="danger">PROIBIDO COMPARTILHAR</span>
+                        <ion-badge color="danger">PROIBIDO COMPARTILHAR</ion-badge>
                     </ng-template>
                     <ng-template [ngIf]="feed.compartilhar === true">
                         <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-                            <!-- <span class="badge badge-success badge-pill">PODE COMPARTILHAR</span> -->
-                            <span ion-button color="success">PODE COMPARTILHAR</span>
+                            <ion-badge color="success">PODE COMPARTILHAR</ion-badge>
                         </ng-template>
                         <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-                            <!-- <span style="cursor: pointer;" class="badge badge-success badge-pill" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</span> -->
-                            <button ion-button color="success" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</button>
+                            <ion-badge color="success" style="cursor: pointer;" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</ion-badge>
                         </ng-template>
                     </ng-template>
-                </div>
-            </div>
-        </div>
-    </ion-item>
-</ng-template>
-<ng-template [ngIf]="feed.usuarioCompartilhou === undefined">
-<div [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-        <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-            <a 
-                style="cursor: pointer;"
-                (click)="navigateToFeedEdit(feed.id)"
-                class="list-group-item clearfix"
-                [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                <div class="pull-left">
-                    <h6><mark>Publicado por: mim</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                    <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                    <p class="list-group-item-text">{{ feed.texto }}</p>
-                </div>
-                <ion-thumbnail item-end>
-                    <img [src]="feed.imagem" alt="{{ feed.titulo }}">
-                </ion-thumbnail>
-            </a>
-        </ng-template>
-        <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-            <a 
-                class="list-group-item clearfix"
-                [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                <div class="pull-left">
-                    <h6><mark>Publicado por: {{ feed.usuario.nome }}</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                    <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                    <p class="list-group-item-text">{{ feed.texto }}</p>
-                </div>
-                <ion-thumbnail item-end>
-                    <img [src]="feed.imagem" alt="{{ feed.titulo }}">
-                </ion-thumbnail>
-            </a>
-        </ng-template>
-        <div class="list-group-item clearfix"
-            [ngClass]="{'list-group-item-info': feed.usuario.email === usuarioAutenticado.email}">
-            <ng-template [ngIf]="feed.privado === true">
-                <!-- <span class="label label-danger">PRIVADO</span> -->
-                <ion-badge color="danger">PRIVADO</ion-badge>
-            </ng-template>
-            <ng-template [ngIf]="feed.privado === false">
-                <!-- <span class="label label-primary">PÚBLICO</span> -->
-                <ion-badge color="success">PÚBLICO</ion-badge>
-            </ng-template>
-            <ng-template [ngIf]="feed.compartilhar === false">
-                <!-- <span class="badge badge-danger badge-pill">PROIBIDO COMPARTILHAR</span> -->
-                <span ion-button color="danger">PROIBIDO COMPARTILHAR</span>
-            </ng-template>
-            <ng-template [ngIf]="feed.compartilhar === true">
-                <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-                    <!-- <span class="badge badge-success badge-pill">PODE COMPARTILHAR</span> -->
-                    <span ion-button color="success">PODE COMPARTILHAR</span>
-                </ng-template>
-                <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-                    <!-- <span style="cursor: pointer;" class="badge badge-success badge-pill" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</span> -->
-                    <button ion-button color="success" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</button>
-                </ng-template>
-            </ng-template>
-        </div>
-    </div>
+                </ion-col>
+                <!-- <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
+                    <ion-col>
+                        <button ion-button clear small (click)="navigateToFeedEdit(feed.id)">
+                            <ion-icon name="create"></ion-icon>
+                        </button>
+                    </ion-col>
+                </ng-template>   -->
+            </ion-row>
+            
+        </ion-card>
+
+    </ion-card>
 </ng-template>
 
-<!-- <ng-template [ngIf]="feed.usuarioCompartilhou !== undefined">
-    <div class="compartilhamento" [ngClass]="{'alert-info': feed.usuarioCompartilhou.email === usuarioAutenticado.email}">
-        <ng-template [ngIf]="feed.usuarioCompartilhou.email === usuarioAutenticado.email">
-            <h6><mark>Compartilhado por: mim</mark> em {{ feed.dataCompartilhamento | date: 'short' }}</h6>
+<ng-template [ngIf]="feed.usuarioCompartilhou === undefined">
+    <ion-card [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
+        <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
+            <ion-item class="alert-info">
+                <h2>Publicado por: mim</h2>
+                <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
+                <p center text-center>{{ dataCriacaoDif }}</p>
+            </ion-item>
+            <img [src]="feed.imagem"/>
+            <ion-card-header>
+                {{ feed.titulo }}
+            </ion-card-header>
+            <ion-card-content>
+                {{ feed.texto }}
+            </ion-card-content>
         </ng-template>
-        <ng-template [ngIf]="feed.usuarioCompartilhou.email !== usuarioAutenticado.email">
-            <h6><mark>Compartilhado por: {{ feed.usuarioCompartilhou.nome }}</mark> em {{ feed.dataCompartilhamento | date: 'short' }}</h6>
+
+        <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
+            <ion-item>
+                <h2>Publicado por: {{ feed.usuario.nome }}</h2>
+                <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
+                <p center text-center>{{ dataCriacaoDif }}</p>
+            </ion-item>
+            <img [src]="feed.imagem"/>
+            <ion-card-header>
+                {{ feed.titulo }}
+            </ion-card-header>
+            <ion-card-content>
+                {{ feed.texto }}
+            </ion-card-content>
         </ng-template>
-        <div [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-            <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-                <a 
-                    style="cursor: pointer;"
-                    [routerLink]="[feed.id]"
-                    routerLinkActive="active"
-                    class="list-group-item clearfix"
-                    [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                    <div class="pull-left">
-                        <h6><mark>Publicado por: mim</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                        <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                        <p class="list-group-item-text">{{ feed.texto }}</p>
-                    </div>
-                    <span class="pull-right">
-                        <img [src]="feed.imagem" alt="{{ feed.titulo }}" class="img-responsive" style="max-height: 100px;">
-                    </span>
-                </a>
-            </ng-template>
-            <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-                <a 
-                    routerLinkActive="active"
-                    class="list-group-item clearfix"
-                    [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                    <div class="pull-left">
-                        <h6><mark>Publicado por: {{ feed.usuario.nome }}</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                        <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                        <p class="list-group-item-text">{{ feed.texto }}</p>
-                    </div>
-                    <span class="pull-right">
-                        <img [src]="feed.imagem" alt="{{ feed.titulo }}" class="img-responsive" style="max-height: 100px;">
-                    </span>
-                </a>
-            </ng-template>
-            <div class="list-group-item clearfix"
-                [ngClass]="{'list-group-item-info': feed.usuario.email === usuarioAutenticado.email}">
+
+        <ion-row wrap right [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
+            <ion-col>
                 <ng-template [ngIf]="feed.privado === true">
-                    <span class="label label-danger">PRIVADO</span>
+                    <ion-badge color="danger">PRIVADO</ion-badge>
                 </ng-template>
                 <ng-template [ngIf]="feed.privado === false">
-                    <span class="label label-primary">PÚBLICO</span>
+                    <ion-badge color="success">PÚBLICO</ion-badge>
                 </ng-template>
+            </ion-col>
+            <ion-col>
                 <ng-template [ngIf]="feed.compartilhar === false">
-                    <span class="badge badge-danger badge-pill">PROIBIDO COMPARTILHAR</span>
+                    <ion-badge color="danger">PROIBIDO COMPARTILHAR</ion-badge>
                 </ng-template>
                 <ng-template [ngIf]="feed.compartilhar === true">
                     <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-                        <span class="badge badge-success badge-pill">PODE COMPARTILHAR</span>
+                        <ion-badge color="success">PODE COMPARTILHAR</ion-badge>
                     </ng-template>
                     <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-                        <span style="cursor: pointer;" class="badge badge-success badge-pill" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</span>
+                        <ion-badge color="success" style="cursor: pointer;" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</ion-badge>
                     </ng-template>
                 </ng-template>
-            </div>
-        </div>
-        <br />
-    </div>
-    <br />
+            </ion-col>
+            <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
+                <ion-col>
+                    <button ion-button clear small (click)="navigateToFeedEdit(feed.id)">
+                        <ion-icon name="create"></ion-icon>
+                    </button>
+                </ion-col>
+            </ng-template>  
+        </ion-row>
+        
+    </ion-card>
 </ng-template>
-<ng-template [ngIf]="feed.usuarioCompartilhou === undefined">
-    <div [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-        <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-            <a 
-                style="cursor: pointer;"
-                [routerLink]="[feed.id]"
-                routerLinkActive="active"
-                class="list-group-item clearfix"
-                [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                <div class="pull-left">
-                    <h6><mark>Publicado por: mim</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                    <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                    <p class="list-group-item-text">{{ feed.texto }}</p>
-                </div>
-                <span class="pull-right">
-                    <img [src]="feed.imagem" alt="{{ feed.titulo }}" class="img-responsive" style="max-height: 100px;">
-                </span>
-            </a>
-        </ng-template>
-        <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-            <a 
-                routerLinkActive="active"
-                class="list-group-item clearfix"
-                [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                <div class="pull-left">
-                    <h6><mark>Publicado por: {{ feed.usuario.nome }}</mark> em {{ feed.dataCriacao | date: 'short' }}</h6>
-                    <h4 class="list-group-item-heading">{{ feed.titulo }}</h4>
-                    <p class="list-group-item-text">{{ feed.texto }}</p>
-                </div>
-                <span class="pull-right">
-                    <img [src]="feed.imagem" alt="{{ feed.titulo }}" class="img-responsive" style="max-height: 100px;">
-                </span>
-            </a>
-        </ng-template>
-        <div class="list-group-item clearfix"
-            [ngClass]="{'list-group-item-info': feed.usuario.email === usuarioAutenticado.email}">
-            <ng-template [ngIf]="feed.privado === true">
-                <span class="label label-danger">PRIVADO</span>
-            </ng-template>
-            <ng-template [ngIf]="feed.privado === false">
-                <span class="label label-primary">PÚBLICO</span>
-            </ng-template>
-            <ng-template [ngIf]="feed.compartilhar === false">
-                <span class="badge badge-danger badge-pill">PROIBIDO COMPARTILHAR</span>
-            </ng-template>
-            <ng-template [ngIf]="feed.compartilhar === true">
-                <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-                    <span class="badge badge-success badge-pill">PODE COMPARTILHAR</span>
-                </ng-template>
-                <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-                    <span style="cursor: pointer;" class="badge badge-success badge-pill" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</span>
-                </ng-template>
-            </ng-template>
-        </div>
-    </div>
-    <br />
-</ng-template> -->
+   
+                        
