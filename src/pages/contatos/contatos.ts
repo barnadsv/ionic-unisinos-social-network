@@ -6,7 +6,7 @@ import { ToastController } from 'ionic-angular/components/toast/toast-controller
 
 @IonicPage()
 @Component({
-  selector: 'contatos-home',
+  selector: 'page-contatos',
   templateUrl: 'contatos.html'
 })
 export class ContatosPage {
