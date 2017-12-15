@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { ContatoSearchService } from './contato-search.service';
 
-import { Contato } from '../../../shared/models/contato.model';
+import { Contato } from '../../../shared/models/contato.interface';
 import { ContatoService } from '../../../shared/services/contato.service';
 import { UsuarioService } from '../../../shared/services/usuario.service';
 

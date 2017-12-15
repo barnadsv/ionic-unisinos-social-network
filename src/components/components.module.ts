@@ -7,9 +7,9 @@ import { ContatoListComponent } from './contatos/contato-list/contato-list.compo
 import { ContatoSearchComponent } from './contatos/contato-search/contato-search.component';
 // import { ContatosComponent } from './contatos/contatos.component';
 // import { HeaderComponent } from './header/header.component';
-// import { FeedEditComponent } from './feeds/feed-edit/feed-edit.component';
-// import { FeedItemComponent } from './feeds/feed-list/feed-item/feed-item.component';
-// import { FeedListComponent } from './feeds/feed-list/feed-list.component';
+import { FeedEditComponent } from './feeds/feed-edit/feed-edit.component';
+import { FeedItemComponent } from './feeds/feed-list/feed-item/feed-item.component';
+import { FeedListComponent } from './feeds/feed-list/feed-list.component';
 // import { FeedsComponent } from './feeds/feeds.component';
 
 @NgModule({
@@ -21,9 +21,9 @@ import { ContatoSearchComponent } from './contatos/contato-search/contato-search
         ContatoSearchComponent,
         // ContatosComponent,
         // HeaderComponent,
-        // FeedEditComponent,
-        // FeedItemComponent,
-        // FeedListComponent,
+        FeedEditComponent,
+        FeedItemComponent,
+        FeedListComponent,
         // FeedsComponent
     ],
     imports: [IonicModule],
@@ -35,9 +35,9 @@ import { ContatoSearchComponent } from './contatos/contato-search/contato-search
         ContatoSearchComponent,
         // ContatosComponent,
         // HeaderComponent,
-        // FeedEditComponent,
-        // FeedItemComponent,
-        // FeedListComponent,
+        FeedEditComponent,
+        FeedItemComponent,
+        FeedListComponent,
         // FeedsComponent
     ]
 })

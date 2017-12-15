@@ -1,0 +1,147 @@
+<form #feedEditForm="ngForm" novalidate>
+    <ion-card>
+        <ion-card-content>
+            <ion-item>
+                <ion-label floating>Título</ion-label>
+                <ion-input 
+                [(ngModel)]="feed.titulo" 
+                type="text" 
+                name="titulo" 
+                #titulo="ngModel" 
+                required></ion-input>
+            </ion-item>
+            <div padding *ngIf="titulo.invalid && titulo.dirty">
+                <span class="global__input-error">Título não é válido.</span>
+            </div>
+            <ion-item>
+                <ion-label floating>Descrição</ion-label>
+                <ion-textarea 
+                [(ngModel)]="feed.texto" 
+                type="text" 
+                name="texto" 
+                #texto="ngModel"></ion-textarea>
+            </ion-item>
+            <div padding *ngIf="texto.invalid && texto.dirty">
+                <span class="global__input-error">A descrição não é válida.</span>
+            </div>
+            <ion-item>
+                <ion-label floating>URL da Imagem</ion-label>
+                <ion-input 
+                [(ngModel)]="feed.imagem" 
+                type="text" 
+                name="imagem" 
+                #imagem="ngModel"></ion-input>
+            </ion-item>
+            <div padding *ngIf="imagem.invalid && imagem.dirty">
+                <span class="global__input-error">URL da imagem não é válida.</span>
+            </div>
+            <img src={{imagem.value}}>
+            <ion-list>
+                
+                <ion-item>
+                    <ion-label>Privado</ion-label>
+                    <ion-checkbox name="privado" [(ngModel)]="feed.privado"></ion-checkbox>
+                </ion-item>
+            
+                <ion-item>
+                    <ion-label>Compartilhar</ion-label>
+                    <ion-checkbox name="compartilhar" [(ngModel)]="feed.compartilhar"></ion-checkbox>
+                </ion-item>
+            
+            </ion-list>
+        </ion-card-content>
+        <ion-row class="login-form__buttons">
+        <div>
+            <button ion-button color="secondary" (click)="onCancel()">Cancelar</button>
+            <button ion-button (click)="onSubmit()" [disabled]="feedEditForm.invalid">Salvar</button>
+        </div>  
+        </ion-row>
+    </ion-card>
+</form>
+
+<!-- <div class="row">
+    <div class="col-xs-12">
+        <form [formGroup]="feedForm" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col-xs-12">
+                <button 
+                type="submit" 
+                class="btn btn-success"
+                [disabled]="!feedForm.valid">Salvar</button>
+                <button type="button" class="btn btn-danger" (click)="onCancel()">Cancelar</button>
+                </div>
+            </div>
+            <hr>
+            <div class="hidden form-group">
+                <input 
+                    type="text" 
+                    id="dataCriacao" 
+                    class="form-control"
+                    formControlName="dataCriacao"
+                >
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="titulo">Título</label>
+                    <input 
+                    type="text" 
+                    id="titulo" 
+                    class="form-control"
+                    formControlName="titulo"
+                    >
+                </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="texto">Descrição</label>
+                        <textarea 
+                        type="text" 
+                        id="texto" 
+                        class="form-control"
+                        formControlName="texto"
+                        >
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="imagem">Imagem</label>
+                    <input 
+                    type="text" 
+                    id="imagem" 
+                    class="form-control"
+                    formControlName="imagem"
+                    #imagem
+                    >
+                </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                <img [src]="imagem.value" class="img-responsive">
+                </div>
+            </div>
+            <div class="row">
+                 <div class="col-xs-12">
+                    <div class="form-check">
+                            <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" id="privado" formControlName="privado">
+                            Privado 
+                        </label> 
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input"  type="checkbox" id="compartilhar" formControlName="compartilhar">
+                            Compartilhar
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div> -->

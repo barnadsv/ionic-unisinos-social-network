@@ -4,9 +4,14 @@
             <ion-icon name="menu"></ion-icon>
         </button>
         <ion-title>Feeds</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="onNovoFeed()">
+                <ion-icon name="add"></ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
-        
-<ion-content padding>
 
+<ion-content padding>
+    <app-feed-list></app-feed-list>
 </ion-content>

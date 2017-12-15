@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 
 import { IonicPage } from 'ionic-angular';
 
+import { NavController } from 'ionic-angular/navigation/nav-controller';
+
 @IonicPage()
 @Component({
   selector: 'page-feeds',
@@ -9,6 +11,10 @@ import { IonicPage } from 'ionic-angular';
 })
 export class FeedsPage {
 
-    constructor() {}
+    constructor(private navCtrl: NavController) {}
+
+    onNovoFeed() {
+        this.navCtrl.push('FeedEditPage');
+    }
     
 }

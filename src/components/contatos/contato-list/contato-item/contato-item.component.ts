@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Contato } from '../../../../shared/models/contato.model';
+import { Contato } from '../../../../shared/models/contato.interface';
 import { ContatoService } from '../../../../shared/services/contato.service';
 
 @Component({

@@ -14,6 +14,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { UsuarioService } from '../shared/services/usuario.service';
 import { ContatoService } from '../shared/services/contato.service';
 import { ContatoSearchService } from '../components/contatos/contato-search/contato-search.service';
+import { FeedService } from '../shared/services/feed.service';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ContatoSearchService } from '../components/contatos/contato-search/cont
     AuthService,
     UsuarioService,
     ContatoService,
-    ContatoSearchService
+    ContatoSearchService,
+    FeedService
   ]
 })
 export class AppModule {}

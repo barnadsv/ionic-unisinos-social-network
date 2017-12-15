@@ -6,8 +6,8 @@ import { Subscription } from 'rxjs/Subscription';
 import { AuthService } from './auth.service';
 import { UsuarioService } from './usuario.service';
 
-import { Usuario } from '../models/usuario.model';
-import { Contato } from '../models/contato.model';
+import { Usuario } from '../models/usuario.interface';
+import { Contato } from '../models/contato.interface';
 
 @Injectable()
 export class ContatoService {

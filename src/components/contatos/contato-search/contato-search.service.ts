@@ -7,8 +7,8 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/switchMap';
 
-import { Contato } from '../../../shared/models/contato.model';
-import { Usuario } from '../../../shared/models/usuario.model';
+import { Contato } from '../../../shared/models/contato.interface';
+import { Usuario } from '../../../shared/models/usuario.interface';
 
 import { UsuarioService } from '../../../shared/services/usuario.service';
 
@@ -39,7 +39,11 @@ export class ContatoSearchService implements OnDestroy {
     if (term !== '') {
         const usuariosFiltrados = this.usuarios.filter( usuario => usuario.nome.toLowerCase().indexOf(term.toLowerCase()) > -1);
         contatos = <Contato[]>usuariosFiltrados.map(function(usuario) {
-            return new Contato(usuario.email, usuario.nome);
+            const novoContato = {} as Contato;
+            novoContato.email = usuario.email;
+            novoContato.nome = usuario.nome;
+            return novoContato;
+            // return new Contato(usuario.email, usuario.nome);
         });
     }
     this.contatosEncontradosSubject.next(contatos);

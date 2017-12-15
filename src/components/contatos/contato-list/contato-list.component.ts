@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/cor
 
 import { Subscription } from 'rxjs/Subscription';
 
-import { Contato } from '../../../shared/models/contato.model';
+import { Contato } from '../../../shared/models/contato.interface';
 import { ContatoService } from '../../../shared/services/contato.service';
 import { ContatoSearchService } from '../contato-search/contato-search.service';
 

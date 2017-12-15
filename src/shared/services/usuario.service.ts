@@ -8,7 +8,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { AuthService } from './auth.service';
 
-import { Usuario } from '../models/usuario.model';
+import { Usuario } from '../models/usuario.interface';
 
 @Injectable()
 export class UsuarioService {
@@ -32,7 +32,12 @@ export class UsuarioService {
     registrarUsuario(email: string, senha: string, nome: string) {
         const usuarioJaCadastrado = this.usuarios.find(usuario => usuario.email === email);
         if (typeof usuarioJaCadastrado === 'undefined') {
-            const novoUsuario = new Usuario(email, sha256(senha), nome, []);
+            const novoUsuario = {} as Usuario;
+            novoUsuario.email = email;
+            novoUsuario.senha = sha256(senha);
+            novoUsuario.nome = nome;
+            novoUsuario.contatos = [];
+            // const novoUsuario = new Usuario(email, sha256(senha), nome, []);
             this.usuarios.push(novoUsuario);
             localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
             this.usuarioAutenticado = novoUsuario;
