@@ -50,6 +50,10 @@ export class FeedItemComponent implements OnInit {
       this.navCtrl.push('FeedEditPage', { id: feedId });
   }
 
+  deleteFeed(feedId: string) {
+    
+  }
+
   calculateDataDif(data: string) {
       let dataDif = "";
       const dataHoje = new Date().getTime();
@@ -63,27 +67,33 @@ export class FeedItemComponent implements OnInit {
       let years = Math.floor(months/12);
       
       if (seconds > 0) {
-        dataDif = seconds.toString() + ' segundos atrás';
+        seconds === 1 ? dataDif = 'há 1 segundo' : dataDif = 'há '+ seconds.toString() + ' segundos';
       } else {
-        dataDif = 'menos de 1 segundo atrás';
+        dataDif = 'há menos de 1 segundo';
       }
       if (minutes > 0) {
-        dataDif = minutes.toString() + ' minutos atrás';
+        // dataDif = minutes.toString() + ' minutos atrás';
+        minutes === 1 ? dataDif = 'há 1 minuto' : dataDif = 'há '+ seconds.toString() + ' minutos';
       }
       if (hours > 0) {
-        dataDif = hours.toString() + ' horas atrás';
+        // dataDif = hours.toString() + ' horas atrás';
+        hours === 1 ? dataDif = 'há 1 hora' : dataDif = 'há '+ seconds.toString() + ' horas';
       }
       if (days > 0) {
-        dataDif = days.toString() + ' dias atrás';
+        // dataDif = days.toString() + ' dias atrás';
+        days === 1 ? dataDif = 'há 1 dia' : dataDif = 'há '+ seconds.toString() + ' dias';
       }
       if (weeks > 0) {
-        dataDif = weeks.toString() + ' semanas atrás';
+        // dataDif = weeks.toString() + ' semanas atrás';
+        weeks === 1 ? dataDif = 'há 1 semana' : dataDif = 'há '+ seconds.toString() + ' semanas';
       }
       if (months > 0) {
-        dataDif = months.toString() + ' meses atrás';
+        // dataDif = months.toString() + ' meses atrás';
+        months === 1 ? dataDif = 'há 1 mês' : dataDif = 'há '+ seconds.toString() + ' meses';
       }
       if (years > 0) {
-        dataDif = years.toString() + ' anos atrás';
+        // dataDif = years.toString() + ' anos atrás';
+        years === 1 ? dataDif = 'há 1 ano' : dataDif = 'há '+ seconds.toString() + ' anos';
       }
       return dataDif;
   }

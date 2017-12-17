@@ -34,7 +34,6 @@ export class FeedListComponent implements OnInit, OnDestroy {
 
   onNovoFeed() {
     this.navCtrl.push('FeedEditPage');
-    // this.router.navigate(['new'], { relativeTo: this.route });
   }
 
   sortFeeds(feeds: Feed[]): Feed[] {
@@ -42,21 +41,12 @@ export class FeedListComponent implements OnInit, OnDestroy {
       const data_a = a.dataCompartilhamento !== undefined ? a.dataCompartilhamento : a.dataCriacao;
       const data_b = b.dataCompartilhamento !== undefined ? b.dataCompartilhamento : b.dataCriacao;
       if (data_a > data_b) {
-        return 1;
-      }
-      if (data_a < data_b) {
         return -1;
       }
-      // a must be equal to b
+      if (data_a < data_b) {
+        return 1;
+      }
       return 0;
-      // if (a.dataCriacao > b.dataCriacao) {
-      //   return 1;
-      // }
-      // if (a.dataCriacao < b.dataCriacao) {
-      //   return -1;
-      // }
-      // // a must be equal to b
-      // return 0;
     });
     return feeds;
   }
