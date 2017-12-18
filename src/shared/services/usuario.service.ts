@@ -71,6 +71,13 @@ export class UsuarioService {
         }
     }
 
+    apagarUsuarios() {
+        if (this.authService.isAutenticado()) {
+            localStorage.removeItem('usuarios');
+            this.usuarios = [];
+        }
+    }
+
     logout() {
         this.usuarioAutenticado = null;
         this.usuarioAutenticadoAlterado.next(null);

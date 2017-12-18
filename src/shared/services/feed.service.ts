@@ -21,48 +21,7 @@ export class FeedService {
     constructor(private authService: AuthService,
                 private usuarioService: UsuarioService) {
         if (authService.isAutenticado()) {
-            let preFeeds = JSON.parse(localStorage.getItem('feeds'));
-            if (preFeeds !== null) {
-                this.feeds = preFeeds.filter
-                ( feed => feed.privado === false ||
-                    ( feed.privado === true &&
-                        ( feed.usuario.contatos.findIndex
-                            (
-                                contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
-                            ) > -1 ||
-                        feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
-                        )
-                    )
-                );
-            }
-            if (this.feeds === null) {
-                this.feeds = [];
-            }
-            this.subscription = this.usuarioService.usuarioAutenticadoAlterado.subscribe(
-                (usuario: Usuario) => {
-                    if (usuario !== null) {
-                        preFeeds = JSON.parse(localStorage.getItem('feeds'));
-                        if (preFeeds !== null) {
-                            this.feeds = preFeeds.filter
-                            ( feed => feed.privado === false ||
-                                ( feed.privado === true &&
-                                    ( feed.usuario.contatos.findIndex
-                                        (
-                                            contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
-                                        ) > -1 ||
-                                    feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
-                                    )
-                                )
-                            );
-                        }
-                    }
-                    if (this.feeds === null) {
-                        this.feeds = [];
-                    }
-                }
-            );
-        } else {
-            return null;
+            this.preCarregarFeeds();
         }
     }
 
@@ -127,8 +86,18 @@ export class FeedService {
         }
     }
 
+    apagarFeeds() {
+        if (this.authService.isAutenticado()) {
+            localStorage.removeItem('feeds');
+            this.feeds = [];
+        }
+    }
+
     getFeeds() {
         if (this.authService.isAutenticado()) {
+            if (this.feeds === null || this.feeds.length === 0) {
+                this.preCarregarFeeds();
+            }
             return this.feeds.slice(); // slice faz uma nova cópia do array de feeds...
         } else {
             return null;
@@ -146,6 +115,49 @@ export class FeedService {
         } else {
             return null;
         }
+    }
+
+    preCarregarFeeds() {
+        let preFeeds = JSON.parse(localStorage.getItem('feeds'));
+        if (preFeeds !== null) {
+            this.feeds = preFeeds.filter
+            ( feed => feed.privado === false ||
+                ( feed.privado === true &&
+                    ( feed.usuario.contatos.findIndex
+                        (
+                            contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
+                        ) > -1 ||
+                    feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+                    )
+                )
+            );
+        }
+        if (this.feeds === null) {
+            this.feeds = [];
+        }
+        this.subscription = this.usuarioService.usuarioAutenticadoAlterado.subscribe(
+            (usuario: Usuario) => {
+                if (usuario !== null) {
+                    preFeeds = JSON.parse(localStorage.getItem('feeds'));
+                    if (preFeeds !== null) {
+                        this.feeds = preFeeds.filter
+                        ( feed => feed.privado === false ||
+                            ( feed.privado === true &&
+                                ( feed.usuario.contatos.findIndex
+                                    (
+                                        contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
+                                    ) > -1 ||
+                                feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+                                )
+                            )
+                        );
+                    }
+                }
+                if (this.feeds === null) {
+                    this.feeds = [];
+                }
+            }
+        );
     }
 
     // Gerando uuid sem garantia de não colisão, apenas para usar em protótipo de app
