@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { IonicPage } from 'ionic-angular';
 
 import { NavController } from 'ionic-angular/navigation/nav-controller';
 import { AuthService } from '../../shared/services/auth.service';
 import { ToastController } from 'ionic-angular/components/toast/toast-controller';
+import { Content } from 'ionic-angular/components/content/content';
 
 @IonicPage()
 @Component({
@@ -13,6 +14,8 @@ import { ToastController } from 'ionic-angular/components/toast/toast-controller
 })
 export class FeedsPage {
 
+    @ViewChild(Content) content: Content;
+    
     constructor(private navCtrl: NavController,
                 private auth: AuthService,
                 private toast: ToastController) {
@@ -30,6 +33,14 @@ export class FeedsPage {
             this.navCtrl.setRoot('LoginPage');
             return false;
         }
+    }
+
+    feedsAlterados(flag: boolean) {
+        this.scrollToTop();
+    }
+
+    scrollToTop() {
+        this.content.scrollToTop();
     }
 
     apagarFeed(resposta: {success: Boolean, message: string, error: string}) {

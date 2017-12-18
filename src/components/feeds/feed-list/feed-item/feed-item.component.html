@@ -66,29 +66,13 @@
                 </ng-template>
             </ion-item>
 
-            <!-- <ion-row wrap right [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
-                <ion-col>
-                    <ng-template [ngIf]="feed.privado === true">
-                        <ion-badge color="danger">PRIVADO</ion-badge>
-                    </ng-template>
-                    <ng-template [ngIf]="feed.privado === false">
-                        <ion-badge color="success">PÚBLICO</ion-badge>
-                    </ng-template>
-                </ion-col>
-                <ion-col>
-                    <ng-template [ngIf]="feed.compartilhar === false">
-                        <ion-badge color="danger">PROIBIDO COMPARTILHAR</ion-badge>
-                    </ng-template>
-                    <ng-template [ngIf]="feed.compartilhar === true">
-                        <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
-                            <ion-badge color="success">PODE COMPARTILHAR</ion-badge>
-                        </ng-template>
-                        <ng-template [ngIf]="feed.usuario.email !== usuarioAutenticado.email">
-                            <ion-badge color="success" style="cursor: pointer;" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</ion-badge>
-                        </ng-template>
-                    </ng-template>
-                </ion-col>
-            </ion-row> -->
+            <ng-template [ngIf]="feed.usuarioCompartilhou.email === usuarioAutenticado.email">
+                <ion-item [ngClass]="{'hide': feed.usuarioCompartilhou.email !== usuarioAutenticado.email}">
+                    <button float-right ion-button clear (click)="deleteFeed(feed.id)">
+                        <ion-icon name="trash"></ion-icon>
+                    </button>
+                </ion-item>
+            </ng-template>
             
         </ion-card>
 
@@ -145,17 +129,17 @@
                     <ion-badge color="success" style="cursor: pointer;" (click)="onCompartilhar(feed)">PODE COMPARTILHAR</ion-badge>
                 </ng-template>
             </ng-template>
-            <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
+        </ion-item>
+        <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
+            <ion-item [ngClass]="{'hide': feed.usuario.email !== usuarioAutenticado.email}">
                 <button float-right ion-button clear (click)="deleteFeed(feed.id)">
                     <ion-icon name="trash"></ion-icon>
                 </button>
-            </ng-template> 
-            <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
                 <button float-right ion-button clear (click)="navigateToFeedEdit(feed.id)">
                     <ion-icon name="create"></ion-icon>
                 </button>
-            </ng-template> 
-        </ion-item>
+            </ion-item>
+        </ng-template>
         
     </ion-card>
 </ng-template>

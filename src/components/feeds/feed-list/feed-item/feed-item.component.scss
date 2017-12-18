@@ -1,16 +1,12 @@
-.badge-md {
-    margin-top: 8px;
-}
-
-.badge-md-success {
+.badge-md-success, .badge-ios-success {
     color: #fff;
     background-color: #28a745;
 }
-.badge-md-light {
+.badge-md-light, .badge-ios-light {
     color: #111;
     background-color: #f8f9fa;
 }
-.badge-md-danger {
+.badge-md-danger, .badge-ios-danger {
     color: #fff;
     background-color: #dc3545;
 }
@@ -33,4 +29,20 @@
 
 ion-icon {
     font-size: 30px; //Preferred size here
+}
+
+.item-content {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    margin-top: -4px;
+    margin-bottom: -4px;
+    height: 70px;
+}
+
+.label-md {
+    margin: 0;
+}
+
+.item-md {
+    padding-left: 4px;
 }

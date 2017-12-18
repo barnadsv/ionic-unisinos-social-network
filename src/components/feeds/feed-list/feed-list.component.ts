@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
+import { NavController } from 'ionic-angular/navigation/nav-controller';
+
 import { Feed } from '../../../shared/models/feed.interface';
 import { FeedService } from '../../../shared/services/feed.service';
-import { NavController } from 'ionic-angular/navigation/nav-controller';
 
 @Component({
   selector: 'app-feed-list',
@@ -12,12 +13,14 @@ import { NavController } from 'ionic-angular/navigation/nav-controller';
 export class FeedListComponent implements OnInit, OnDestroy {
 
   @Output() apagarFeedStatus: EventEmitter<{success: Boolean, message: string, error: string}>;
+  @Output() feedsAlterados: EventEmitter<boolean>;
   subscription: Subscription;
   feeds: Feed[];
 
   constructor(private feedService: FeedService,
               private navCtrl: NavController) { 
       this.apagarFeedStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
+      this.feedsAlterados = new EventEmitter<boolean>();
   }
 
   ngOnInit() {
@@ -26,7 +29,7 @@ export class FeedListComponent implements OnInit, OnDestroy {
       this.subscription = this.feedService.feedsAlterados.subscribe(
           (feeds: Feed[]) => {
               this.feeds = feeds;
-              //this.feeds = this.sortFeeds(this.feeds);
+              this.feedsAlterados.emit(true);
           }
       );
       this.feedService.apagarFeedMessage.subscribe(
