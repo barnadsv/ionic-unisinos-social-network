@@ -20,47 +20,50 @@ export class FeedService {
 
     constructor(private authService: AuthService,
                 private usuarioService: UsuarioService) {
-        let preFeeds = JSON.parse(localStorage.getItem('feeds'));
-        if (preFeeds !== null) {
-            this.feeds = preFeeds.filter
-            ( feed => feed.privado === false ||
-                ( feed.privado === true &&
-                    ( feed.usuario.contatos.findIndex
-                        (
-                            contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
-                        ) > -1 ||
-                      feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+        if (authService.isAutenticado()) {
+            let preFeeds = JSON.parse(localStorage.getItem('feeds'));
+            if (preFeeds !== null) {
+                this.feeds = preFeeds.filter
+                ( feed => feed.privado === false ||
+                    ( feed.privado === true &&
+                        ( feed.usuario.contatos.findIndex
+                            (
+                                contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
+                            ) > -1 ||
+                        feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+                        )
                     )
-                )
-            );
-        }
-        if (this.feeds === null) {
-            this.feeds = [];
-        }
-        this.subscription = this.usuarioService.usuarioAutenticadoAlterado.subscribe(
-            (usuario: Usuario) => {
-                if (usuario !== null) {
-                    preFeeds = JSON.parse(localStorage.getItem('feeds'));
-                    if (preFeeds !== null) {
-                        this.feeds = preFeeds.filter
-                        ( feed => feed.privado === false ||
-                            ( feed.privado === true &&
-                                ( feed.usuario.contatos.findIndex
-                                    (
-                                        contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
-                                    ) > -1 ||
-                                feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+                );
+            }
+            if (this.feeds === null) {
+                this.feeds = [];
+            }
+            this.subscription = this.usuarioService.usuarioAutenticadoAlterado.subscribe(
+                (usuario: Usuario) => {
+                    if (usuario !== null) {
+                        preFeeds = JSON.parse(localStorage.getItem('feeds'));
+                        if (preFeeds !== null) {
+                            this.feeds = preFeeds.filter
+                            ( feed => feed.privado === false ||
+                                ( feed.privado === true &&
+                                    ( feed.usuario.contatos.findIndex
+                                        (
+                                            contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
+                                        ) > -1 ||
+                                    feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+                                    )
                                 )
-                            )
-                        );
+                            );
+                        }
+                    }
+                    if (this.feeds === null) {
+                        this.feeds = [];
                     }
                 }
-                if (this.feeds === null) {
-                    this.feeds = [];
-                }
-            }
-        );
-
+            );
+        } else {
+            return null;
+        }
     }
 
     salvarFeed(id: string, feedAlterado: Feed, compartilhado = false) {
@@ -82,7 +85,8 @@ export class FeedService {
                 if (typeof feedAlterado.compartilhar === 'undefined') {
                     feedAlterado.compartilhar = false;
                 }
-                this.feeds.push(feedAlterado);
+                // this.feeds.push(feedAlterado);
+                this.feeds.unshift(feedAlterado);
                 localStorage.setItem('feeds', JSON.stringify(this.feeds));
                 this.feedsAlterados.next(this.feeds.slice());
                 const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
@@ -113,6 +117,7 @@ export class FeedService {
                     this.feeds.splice(indice, 1);
                     localStorage.setItem('feeds', JSON.stringify(this.feeds));
                     this.feedsAlterados.next(this.feeds.slice());
+                    this.apagarFeedMessage.next({success: true, message: 'Feed removido com sucesso.', error: null});
                 } else {
                     this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
                 }
@@ -123,13 +128,21 @@ export class FeedService {
     }
 
     getFeeds() {
-        return this.feeds.slice(); // slice faz uma nova cópia do array de feeds...
+        if (this.authService.isAutenticado()) {
+            return this.feeds.slice(); // slice faz uma nova cópia do array de feeds...
+        } else {
+            return null;
+        }
     }
 
     getFeed(id: string): Feed {
-        const feedEncontrado = this.feeds.find(feed => feed.id === id);
-        if (typeof feedEncontrado !== 'undefined') {
-            return feedEncontrado;
+        if (this.authService.isAutenticado()) {
+            const feedEncontrado = this.feeds.find(feed => feed.id === id);
+            if (typeof feedEncontrado !== 'undefined') {
+                return feedEncontrado;
+            } else {
+                return null;
+            }
         } else {
             return null;
         }

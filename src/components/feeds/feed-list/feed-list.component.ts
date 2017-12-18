@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { Feed } from '../../../shared/models/feed.interface';
@@ -11,19 +11,27 @@ import { NavController } from 'ionic-angular/navigation/nav-controller';
 })
 export class FeedListComponent implements OnInit, OnDestroy {
 
+  @Output() apagarFeedStatus: EventEmitter<{success: Boolean, message: string, error: string}>;
   subscription: Subscription;
   feeds: Feed[];
 
   constructor(private feedService: FeedService,
-              private navCtrl: NavController) { }
+              private navCtrl: NavController) { 
+      this.apagarFeedStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
+  }
 
   ngOnInit() {
       this.feeds = this.feedService.getFeeds();
-      this.feeds = this.sortFeeds(this.feeds);
+      //this.feeds = this.sortFeeds(this.feeds);
       this.subscription = this.feedService.feedsAlterados.subscribe(
           (feeds: Feed[]) => {
               this.feeds = feeds;
-              this.feeds = this.sortFeeds(this.feeds);
+              //this.feeds = this.sortFeeds(this.feeds);
+          }
+      );
+      this.feedService.apagarFeedMessage.subscribe(
+          (resposta) => {
+              this.apagarFeedStatus.emit(resposta);
           }
       );
   }
