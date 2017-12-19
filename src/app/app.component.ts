@@ -37,8 +37,8 @@ export class MyApp {
         // { title: 'Registro', component: 'RegistroPage' },
         { title: 'Feeds', component: 'FeedsPage' },
         { title: 'Contatos', component: 'ContatosPage' },
-        { title: 'Logout', component: 'LoginPage' },
         { title: 'Perfil', component: 'PerfilEditPage' },
+        { title: 'Logout', component: 'LoginPage' },
         { title: 'Resetar Dados', component: 'LoginPage'}
       ];
 
