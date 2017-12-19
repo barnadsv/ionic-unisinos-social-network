@@ -21,7 +21,9 @@ import { FeedService } from '../shared/services/feed.service';
   imports: [
     BrowserModule,
     FormsModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, {
+      backButtonText: ''
+    }),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
