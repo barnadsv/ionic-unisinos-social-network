@@ -10,13 +10,18 @@ export class AuthService {
 
     autenticar() {
         this.autenticado = true;
+        localStorage.setItem('autenticado', 'true');
     }
 
     logout() {
         this.autenticado = false;
+        localStorage.removeItem('autenticado');
     }
 
     isAutenticado() {
+        if (this.autenticado === false) {
+            this.autenticado = localStorage.getItem('autenticado') === null ? false : true;
+        }
         return this.autenticado;
     }
 }

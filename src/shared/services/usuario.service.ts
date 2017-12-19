@@ -43,6 +43,7 @@ export class UsuarioService {
             localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
             this.usuarioAutenticado = novoUsuario;
             this.authService.autenticar();
+            localStorage.setItem('usuarioAutenticado', JSON.stringify(this.usuarioAutenticado));
             this.usuarioAutenticadoAlterado.next(this.usuarioAutenticado);
             this.usuariosAlterados.next(this.usuarios.slice());
             this.registroMessage.next({success: true, message: 'Usuário registrado com sucesso.', error: null});
@@ -56,6 +57,7 @@ export class UsuarioService {
         if (typeof usuarioEncontrado !== 'undefined' && usuarioEncontrado.senha === sha256(senha)) {
             this.usuarioAutenticado = usuarioEncontrado;
             this.authService.autenticar();
+            localStorage.setItem('usuarioAutenticado', JSON.stringify(this.usuarioAutenticado));
             this.usuarioAutenticadoAlterado.next(this.usuarioAutenticado);
             this.loginMessage.next({success: true, message: 'Login realizado com sucesso.', error: null});
         } else {
@@ -90,10 +92,12 @@ export class UsuarioService {
         this.usuarioAutenticado = null;
         this.usuarioAutenticadoAlterado.next(null);
         this.authService.logout();
+        localStorage.removeItem('usuarioAutenticado');
         //this.navCtrl.setRoot('LoginPage');
     }
 
     getUsuarioAutenticado(): Usuario {
+        this.usuarioAutenticado = localStorage.getItem('usuarioAutenticado') === null ? null : JSON.parse(localStorage.getItem('usuarioAutenticado'));
         return this.usuarioAutenticado;
     }
 
