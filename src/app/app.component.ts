@@ -26,6 +26,10 @@ export class MyApp {
                 private alertCtrl: AlertController) {
       this.initializeApp();
 
+      this.statusBar.overlaysWebView(true);
+      this.statusBar.backgroundColorByHexString('#bcbdfc');
+      this.statusBar.styleDefault();
+      
       // used for an example of ngFor and navigation
       this.pages = [
         // { title: 'Login', component: 'LoginPage' },

@@ -1,21 +1,6 @@
-<ion-list inset>
+<ion-list>
     <app-feed-item 
         *ngFor="let feedEl of feeds" 
         [feed]="feedEl">
     </app-feed-item>
 </ion-list>
-
-<!-- <div class="row">
-    <div clas="col-xs-12 col-md-12 col-sm-12">
-        <button class="btn btn-success" (click)="onNovoFeed()">Novo Feed</button>
-    </div>
-</div>
-<hr>
-<div class="row">
-    <div class="col-xs-12 col-md-12 col-sm-12">
-        <app-feed-item 
-            *ngFor="let feedEl of feeds" 
-            [feed]="feedEl">
-        </app-feed-item>
-    </div>
-</div> -->
