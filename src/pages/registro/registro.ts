@@ -17,6 +17,7 @@ export class RegistroPage {
     if (resposta.success) {
       this.toast.create({
         message: resposta.message,
+        cssClass: 'toast-success',
         duration: 3000
       }).present();
       this.navCtrl.setRoot('FeedsPage');
@@ -24,11 +25,13 @@ export class RegistroPage {
       if (resposta.error === 'auth/email-ja-cadastrado') {
         this.toast.create({
           message: 'Usuário com este e-mail já está cadastrado.',
+          cssClass: 'toast-error',
           duration: 3000
         }).present();
       } else {
         this.toast.create({
           message: resposta.message,
+          cssClass: 'toast-error',
           duration: 3000
         }).present();
       }

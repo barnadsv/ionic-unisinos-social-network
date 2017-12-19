@@ -47,6 +47,7 @@ export class FeedsPage {
         if (resposta.success) {
             this.toast.create({
                 message: resposta.message,
+                cssClass: 'toast-success',
                 duration: 3000
             }).present();
             this.navCtrl.setRoot('FeedsPage');
@@ -54,12 +55,14 @@ export class FeedsPage {
             if (resposta.error === 'salvar-feed/nao-autenticado') {
                 this.toast.create({
                     message: 'Usuário não está autenticado.',
+                    cssClass: 'toast-error',
                     duration: 3000
                 }).present();
                 this.navCtrl.setRoot('LoginPage');
             } else {
                 this.toast.create({
                     message: resposta.message,
+                    cssClass: 'toast-error',
                     duration: 3000
                 }).present();
             }

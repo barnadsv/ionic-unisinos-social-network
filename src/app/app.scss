@@ -19,12 +19,14 @@
     color: red;
 }
 
-ion-toast.success .toast-wrapper {
-	background: green;
+ion-toast.toast-success .toast-wrapper {
+    background: green;
+    text-align: center;
 }
 
-ion-toast.error .toast-wrapper {
-	background: rgb(209, 71, 71);
+ion-toast.toast-error .toast-wrapper {
+    background: rgb(209, 71, 71);
+    text-align: center;
 }
 
 ion-toolbar img {

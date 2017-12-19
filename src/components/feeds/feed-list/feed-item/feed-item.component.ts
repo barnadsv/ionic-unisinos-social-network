@@ -16,6 +16,7 @@ export class FeedItemComponent implements OnInit {
   usuarioAutenticado: Usuario;
   dataCriacaoDif: string;
   dataCompartilhamentoDif: string;
+  dataUltimaAlteracaoDif: string;
 
   constructor(public usuarioService: UsuarioService,
               public feedService: FeedService,
@@ -29,6 +30,11 @@ export class FeedItemComponent implements OnInit {
             this.dataCriacaoDif = this.calculateDataDif(this.feed.dataCriacao.toString());
           } else {
             this.dataCriacaoDif = "";
+          }
+          if (this.feed.dataUltimaAtualizacao != null && typeof this.feed.dataUltimaAtualizacao !== 'undefined') {
+            this.dataUltimaAlteracaoDif = this.calculateDataDif(this.feed.dataUltimaAtualizacao.toString());
+          } else {
+            this.dataUltimaAlteracaoDif = "";
           }
           if (this.feed.dataCompartilhamento != null && typeof this.feed.dataCompartilhamento !== 'undefined') {
             this.dataCompartilhamentoDif = this.calculateDataDif(this.feed.dataCompartilhamento.toString());

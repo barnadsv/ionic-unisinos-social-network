@@ -66,13 +66,22 @@
                 </ng-template>
             </ion-item>
 
-            <ng-template [ngIf]="feed.usuarioCompartilhou.email === usuarioAutenticado.email">
+            <ion-item>
+                <ng-template [ngIf]="dataUltimaAlteracaoDif !== ''">                        
+                    <span class="atualizado">Atualizado {{ dataUltimaAlteracaoDif }}</span>
+                </ng-template>
+                <button [ngClass]="{'hide': feed.usuarioCompartilhou.email !== usuarioAutenticado.email}" float-right ion-button clear (click)="deleteFeed(feed.id)">
+                    <ion-icon name="trash"></ion-icon>
+                </button>
+            </ion-item>
+
+            <!-- <ng-template [ngIf]="feed.usuarioCompartilhou.email === usuarioAutenticado.email">
                 <ion-item [ngClass]="{'hide': feed.usuarioCompartilhou.email !== usuarioAutenticado.email}">
                     <button float-right ion-button clear (click)="deleteFeed(feed.id)">
                         <ion-icon name="trash"></ion-icon>
                     </button>
                 </ion-item>
-            </ng-template>
+            </ng-template> -->
             
         </ion-card>
 
@@ -130,7 +139,20 @@
                 </ng-template>
             </ng-template>
         </ion-item>
-        <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
+
+        <ion-item>
+            <ng-template [ngIf]="dataUltimaAlteracaoDif !== ''">                        
+                <span class="atualizado">Atualizado {{ dataUltimaAlteracaoDif }}</span>
+            </ng-template>
+            <button [ngClass]="{'hide': feed.usuario.email !== usuarioAutenticado.email}" float-right ion-button clear (click)="deleteFeed(feed.id)">
+                <ion-icon name="trash"></ion-icon>
+            </button>
+            <button [ngClass]="{'hide': feed.usuario.email !== usuarioAutenticado.email}" float-right ion-button clear (click)="navigateToFeedEdit(feed.id)">
+                <ion-icon name="create"></ion-icon>
+            </button>
+        </ion-item>
+
+        <!-- <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
             <ion-item [ngClass]="{'hide': feed.usuario.email !== usuarioAutenticado.email}">
                 <button float-right ion-button clear (click)="deleteFeed(feed.id)">
                     <ion-icon name="trash"></ion-icon>
@@ -139,7 +161,7 @@
                     <ion-icon name="create"></ion-icon>
                 </button>
             </ion-item>
-        </ng-template>
+        </ng-template> -->
         
     </ion-card>
 </ng-template>

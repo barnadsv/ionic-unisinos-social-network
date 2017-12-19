@@ -9,6 +9,7 @@ export interface Feed {
     privado?: boolean;
     compartilhar?: boolean;
     usuario?: Usuario;
+    dataUltimaAtualizacao?: Date;
     
     idFeedOriginal?: string;
     usuarioCompartilhou?: Usuario;

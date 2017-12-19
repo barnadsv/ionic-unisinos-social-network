@@ -16,6 +16,7 @@ export class LoginPage {
     if (resposta.success) {
       this.toast.create({
         message: resposta.message,
+        cssClass: 'toast-success',
         duration: 3000
       }).present();
       this.navCtrl.setRoot('FeedsPage');
@@ -23,11 +24,13 @@ export class LoginPage {
       if (resposta.error === 'auth/email-senha-errados') {
         this.toast.create({
           message: 'Email/Senha errados.',
+          cssClass: 'toast-error',
           duration: 3000
         }).present();
       } else {
         this.toast.create({
           message: resposta.message,
+          cssClass: 'toast-error',
           duration: 3000
         }).present();
       }

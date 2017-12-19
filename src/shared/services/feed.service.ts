@@ -55,6 +55,7 @@ export class FeedService {
                 if (indice !== -1) {
                     feedAlterado.id = id;
                     feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado();
+                    feedAlterado.dataUltimaAtualizacao = new Date();
                     this.feeds[indice] = feedAlterado;
                     localStorage.setItem('feeds', JSON.stringify(this.feeds));
                     this.feedsAlterados.next(this.feeds.slice());
