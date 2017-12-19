@@ -1,0 +1,33 @@
+<form #perfilForm="ngForm" novalidate>
+    <ion-card>
+        <ion-card-content>
+            <ion-item>
+                <ion-label floating>Nome</ion-label>
+                <ion-input 
+                    [(ngModel)]="usuario.nome" 
+                    type="text" 
+                    name="nome" 
+                    #nome="ngModel" 
+                    required>
+                </ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label floating>E-mail</ion-label>
+                <ion-input 
+                    [(ngModel)]="usuario.email" 
+                    type="email" 
+                    name="email" 
+                    #email="ngModel" 
+                    required
+                    email
+                    disabled>
+                </ion-input>
+            </ion-item>
+        </ion-card-content>
+        <ion-row class="registro-form__button">
+            <button ion-button color="secondary" (click)="onCancel()">Cancelar</button>
+            <button ion-button (click)="onSubmit()" [disabled]="perfilForm.invalid">Salvar</button>
+        </ion-row>
+    </ion-card>
+  </form>
+    

@@ -10,6 +10,7 @@ import { ContatoSearchComponent } from './contatos/contato-search/contato-search
 import { FeedEditComponent } from './feeds/feed-edit/feed-edit.component';
 import { FeedItemComponent } from './feeds/feed-list/feed-item/feed-item.component';
 import { FeedListComponent } from './feeds/feed-list/feed-list.component';
+import { PerfilEditComponent } from './perfil-edit/perfil-edit.component';
 // import { FeedsComponent } from './feeds/feeds.component';
 
 @NgModule({
@@ -25,6 +26,7 @@ import { FeedListComponent } from './feeds/feed-list/feed-list.component';
         FeedItemComponent,
         FeedListComponent,
         // FeedsComponent
+        PerfilEditComponent
     ],
     imports: [IonicModule],
     exports: [
@@ -39,6 +41,7 @@ import { FeedListComponent } from './feeds/feed-list/feed-list.component';
         FeedItemComponent,
         FeedListComponent,
         // FeedsComponent
+        PerfilEditComponent
     ]
 })
 

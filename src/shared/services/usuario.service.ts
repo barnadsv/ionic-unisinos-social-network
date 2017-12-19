@@ -17,6 +17,7 @@ export class UsuarioService {
     private usuarioAutenticado: Usuario;
     loginMessage = new Subject<{success: boolean, message: string, error: any}>();
     registroMessage = new Subject<{success: boolean, message: string, error: any}>();
+    salvarUsuarioMessage = new Subject<{success: boolean, message: string, error: any}>();
     usuariosAlterados = new Subject<Usuario[]>();
     usuarioAutenticadoAlterado = new Subject<Usuario>();
 
@@ -63,11 +64,18 @@ export class UsuarioService {
     }
 
     salvarUsuario(usuarioASalvar: Usuario) {
-        const indice = this.usuarios.findIndex(usuario => usuario.email === usuarioASalvar.email);
-        if (indice > -1) {
-            this.usuarios[indice] = usuarioASalvar;
-            localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
-            this.usuariosAlterados.next(this.usuarios.slice());
+        if (this.authService.isAutenticado()) {
+            const indice = this.usuarios.findIndex(usuario => usuario.email === usuarioASalvar.email);
+            if (indice > -1) {
+                this.usuarios[indice] = usuarioASalvar;
+                localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
+                this.usuariosAlterados.next(this.usuarios.slice());
+                this.salvarUsuarioMessage.next({success: true, message: 'Usuário salvo com sucesso.', error: null});
+            } else {
+                this.salvarUsuarioMessage.next({success: false, message: null, error: 'salvar-usuario/usuario-nao-encontrado'});
+            }
+        } else {
+            this.salvarUsuarioMessage.next({success: false, message: null, error: 'salvar-usuario/nao-autenticado'});
         }
     }
 

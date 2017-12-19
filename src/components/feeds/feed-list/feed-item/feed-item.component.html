@@ -16,13 +16,16 @@
             </ion-item>
         </ng-template>
         <ion-card [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
+            
             <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
                 <ion-item class="alert-info">
                     <h2>Publicado por: mim</h2>
                     <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
                     <p center text-center>{{ dataCriacaoDif }}</p>
                 </ion-item>
-                <img [src]="feed.imagem"/>
+                <ng-template [ngIf]="feed.imagem !== undefined">
+                    <img [src]="feed.imagem"/>
+                </ng-template>
                 <ion-card-header>
                     {{ feed.titulo }}
                 </ion-card-header>
@@ -37,7 +40,9 @@
                     <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
                     <p center text-center>{{ dataCriacaoDif }}</p>
                 </ion-item>
-                <img [src]="feed.imagem"/>
+                <ng-template [ngIf]="feed.imagem !== undefined">
+                    <img [src]="feed.imagem"/>
+                </ng-template>
                 <ion-card-header>
                     {{ feed.titulo }}
                 </ion-card-header>
@@ -90,13 +95,16 @@
 
 <ng-template [ngIf]="feed.usuarioCompartilhou === undefined">
     <ion-card [ngClass]="{'alert-info': feed.usuario.email === usuarioAutenticado.email}">
+
         <ng-template [ngIf]="feed.usuario.email === usuarioAutenticado.email">
             <ion-item class="alert-info">
                 <h2>Publicado por: mim</h2>
                 <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
                 <p center text-center>{{ dataCriacaoDif }}</p>
             </ion-item>
-            <img [src]="feed.imagem"/>
+            <ng-template [ngIf]="feed.imagem !== undefined">
+                <img [src]="feed.imagem"/>
+            </ng-template>
             <ion-card-header>
                 {{ feed.titulo }}
             </ion-card-header>
@@ -111,7 +119,9 @@
                 <!-- <p center text-center> em {{ feed.dataCriacao | date: 'short' }}</p> -->
                 <p center text-center>{{ dataCriacaoDif }}</p>
             </ion-item>
-            <img [src]="feed.imagem"/>
+            <ng-template [ngIf]="feed.imagem !== undefined">
+                <img [src]="feed.imagem"/>
+            </ng-template>
             <ion-card-header>
                 {{ feed.titulo }}
             </ion-card-header>

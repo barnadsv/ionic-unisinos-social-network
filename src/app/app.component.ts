@@ -38,7 +38,7 @@ export class MyApp {
         { title: 'Feeds', component: 'FeedsPage' },
         { title: 'Contatos', component: 'ContatosPage' },
         { title: 'Logout', component: 'LoginPage' },
-        { title: 'Perfil', component: 'PerfilPage' },
+        { title: 'Perfil', component: 'PerfilEditPage' },
         { title: 'Resetar Dados', component: 'LoginPage'}
       ];
 

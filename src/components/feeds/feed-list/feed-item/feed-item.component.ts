@@ -17,6 +17,7 @@ export class FeedItemComponent implements OnInit {
   dataCriacaoDif: string;
   dataCompartilhamentoDif: string;
   dataUltimaAlteracaoDif: string;
+  temImagem: boolean;
 
   constructor(public usuarioService: UsuarioService,
               public feedService: FeedService,
@@ -41,9 +42,15 @@ export class FeedItemComponent implements OnInit {
           } else {
             this.dataCompartilhamentoDif = "";
           }
+          if (typeof this.feed.imagem === 'undefined' || this.feed.imagem === '') {
+            this.temImagem = false;
+          } else {
+            this.temImagem = true;
+          }
       } else {
         this.dataCriacaoDif = "";
         this.dataCompartilhamentoDif = "";
+        this.temImagem = false;
       }
   }
 
