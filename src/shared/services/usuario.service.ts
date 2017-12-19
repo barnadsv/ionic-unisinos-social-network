@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-//import { NavController } from 'ionic-angular';
-
 import { sha256 } from 'js-sha256';
 
 import { Subject } from 'rxjs/Subject';
@@ -22,8 +20,7 @@ export class UsuarioService {
     usuarioAutenticadoAlterado = new Subject<Usuario>();
 
 
-    constructor(private authService: AuthService,
-                /*private navCtrl: NavController*/) {
+    constructor(private authService: AuthService) {
         this.usuarios = JSON.parse(localStorage.getItem('usuarios'));
         if (this.usuarios === null) {
             this.usuarios = [];
@@ -38,7 +35,6 @@ export class UsuarioService {
             novoUsuario.senha = sha256(senha);
             novoUsuario.nome = nome;
             novoUsuario.contatos = [];
-            // const novoUsuario = new Usuario(email, sha256(senha), nome, []);
             this.usuarios.push(novoUsuario);
             localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
             this.usuarioAutenticado = novoUsuario;
@@ -88,12 +84,16 @@ export class UsuarioService {
         }
     }
 
+    apagarUsuarioAutenticado() {
+        this.usuarioAutenticado = null;
+        localStorage.removeItem('usuarioAutenticado');
+    }
+
     logout() {
         this.usuarioAutenticado = null;
         this.usuarioAutenticadoAlterado.next(null);
         this.authService.logout();
         localStorage.removeItem('usuarioAutenticado');
-        //this.navCtrl.setRoot('LoginPage');
     }
 
     getUsuarioAutenticado(): Usuario {

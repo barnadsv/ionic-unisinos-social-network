@@ -24,4 +24,9 @@ export class AuthService {
         }
         return this.autenticado;
     }
+
+    apagarAutenticacao() {
+        this.autenticado = false;
+        localStorage.removeItem('autenticado');
+    }
 }

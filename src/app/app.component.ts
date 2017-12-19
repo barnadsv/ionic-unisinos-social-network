@@ -92,6 +92,8 @@ export class MyApp {
                     handler: () => {
                       this.feedService.apagarFeeds();
                       this.usuarioService.apagarUsuarios();
+                      this.usuarioService.apagarUsuarioAutenticado();
+                      this.auth.apagarAutenticacao();
                     }
                 }
             ]
