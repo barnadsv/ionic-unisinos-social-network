@@ -24,9 +24,10 @@ export class MyApp {
                 private usuarioService: UsuarioService,
                 private feedService: FeedService,
                 private alertCtrl: AlertController) {
+
       this.initializeApp();
 
-      this.statusBar.overlaysWebView(true);
+      // Mudando a cor de fundo e a cor do texto do status bar
       this.statusBar.backgroundColorByHexString('#bcbdfc');
       this.statusBar.styleDefault();
       
