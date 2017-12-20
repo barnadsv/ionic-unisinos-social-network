@@ -46,7 +46,9 @@ export class FeedService {
                 }
                 // this.feeds.push(feedAlterado);
                 this.feeds.unshift(feedAlterado);
-                localStorage.setItem('feeds', JSON.stringify(this.feeds));
+                let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
+                todosFeeds.unshift(feedAlterado);
+                localStorage.setItem('feeds', JSON.stringify(todosFeeds));
                 this.feedsAlterados.next(this.feeds.slice());
                 const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
                 this.salvarFeedMessage.next({success: true, message: message, error: null});
@@ -57,9 +59,16 @@ export class FeedService {
                     feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado();
                     feedAlterado.dataUltimaAtualizacao = new Date();
                     this.feeds[indice] = feedAlterado;
-                    localStorage.setItem('feeds', JSON.stringify(this.feeds));
-                    this.feedsAlterados.next(this.feeds.slice());
-                    this.salvarFeedMessage.next({success: true, message: 'Feed salvo com sucesso.', error: null});
+                    let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
+                    const idx = todosFeeds.findIndex(feed => feed.id === id);
+                    if (idx !== -1) {
+                        todosFeeds[idx] = feedAlterado;
+                        localStorage.setItem('feeds', JSON.stringify(todosFeeds));
+                        this.feedsAlterados.next(this.feeds.slice());
+                        this.salvarFeedMessage.next({success: true, message: 'Feed salvo com sucesso.', error: null});
+                    } else {
+                        this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/feed-nao-encontrado'});
+                    }
                 } else {
                     this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/feed-nao-encontrado'});
                 }
@@ -75,9 +84,16 @@ export class FeedService {
                 const indice = this.feeds.findIndex(feed => feed.id === id);
                 if (indice !== -1) {
                     this.feeds.splice(indice, 1);
-                    localStorage.setItem('feeds', JSON.stringify(this.feeds));
-                    this.feedsAlterados.next(this.feeds.slice());
-                    this.apagarFeedMessage.next({success: true, message: 'Feed removido com sucesso.', error: null});
+                    let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
+                    const idx = todosFeeds.findIndex(feed => feed.id === id);
+                    if (idx !== -1) {
+                        todosFeeds.splice(idx, 1);
+                        localStorage.setItem('feeds', JSON.stringify(todosFeeds));
+                        this.feedsAlterados.next(this.feeds.slice());
+                        this.apagarFeedMessage.next({success: true, message: 'Feed removido com sucesso.', error: null});
+                    } else {
+                        this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
+                    }
                 } else {
                     this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
                 }
@@ -96,9 +112,7 @@ export class FeedService {
 
     getFeeds() {
         if (this.authService.isAutenticado()) {
-            if (this.feeds === null || this.feeds.length === 0) {
-                this.preCarregarFeeds();
-            }
+            this.preCarregarFeeds();
             return this.feeds.slice(); // slice faz uma nova cópia do array de feeds...
         } else {
             return null;
