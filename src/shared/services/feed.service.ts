@@ -47,6 +47,9 @@ export class FeedService {
                 // this.feeds.push(feedAlterado);
                 this.feeds.unshift(feedAlterado);
                 let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
+                if (todosFeeds === null) {
+                    todosFeeds = [];
+                }
                 todosFeeds.unshift(feedAlterado);
                 localStorage.setItem('feeds', JSON.stringify(todosFeeds));
                 this.feedsAlterados.next(this.feeds.slice());
@@ -60,12 +63,16 @@ export class FeedService {
                     feedAlterado.dataUltimaAtualizacao = new Date();
                     this.feeds[indice] = feedAlterado;
                     let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
-                    const idx = todosFeeds.findIndex(feed => feed.id === id);
-                    if (idx !== -1) {
-                        todosFeeds[idx] = feedAlterado;
-                        localStorage.setItem('feeds', JSON.stringify(todosFeeds));
-                        this.feedsAlterados.next(this.feeds.slice());
-                        this.salvarFeedMessage.next({success: true, message: 'Feed salvo com sucesso.', error: null});
+                    if (todosFeeds !== null) {
+                        const idx = todosFeeds.findIndex(feed => feed.id === id);
+                        if (idx !== -1) {
+                            todosFeeds[idx] = feedAlterado;
+                            localStorage.setItem('feeds', JSON.stringify(todosFeeds));
+                            this.feedsAlterados.next(this.feeds.slice());
+                            this.salvarFeedMessage.next({success: true, message: 'Feed salvo com sucesso.', error: null});
+                        } else {
+                            this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/feed-nao-encontrado'});
+                        }
                     } else {
                         this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/feed-nao-encontrado'});
                     }
@@ -85,12 +92,16 @@ export class FeedService {
                 if (indice !== -1) {
                     this.feeds.splice(indice, 1);
                     let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
-                    const idx = todosFeeds.findIndex(feed => feed.id === id);
-                    if (idx !== -1) {
-                        todosFeeds.splice(idx, 1);
-                        localStorage.setItem('feeds', JSON.stringify(todosFeeds));
-                        this.feedsAlterados.next(this.feeds.slice());
-                        this.apagarFeedMessage.next({success: true, message: 'Feed removido com sucesso.', error: null});
+                    if (todosFeeds !== null) {
+                        const idx = todosFeeds.findIndex(feed => feed.id === id);
+                        if (idx !== -1) {
+                            todosFeeds.splice(idx, 1);
+                            localStorage.setItem('feeds', JSON.stringify(todosFeeds));
+                            this.feedsAlterados.next(this.feeds.slice());
+                            this.apagarFeedMessage.next({success: true, message: 'Feed removido com sucesso.', error: null});
+                        } else {
+                            this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
+                        }
                     } else {
                         this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
                     }
