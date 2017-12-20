@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Feed } from '../../../../shared/models/feed.interface';
 import { Usuario } from '../../../../shared/models/usuario.interface';
 import { UsuarioService } from '../../../../shared/services/usuario.service';
@@ -10,7 +10,7 @@ import { AlertController } from 'ionic-angular/components/alert/alert-controller
   selector: 'app-feed-item',
   templateUrl: './feed-item.component.html'
 })
-export class FeedItemComponent implements OnInit {
+export class FeedItemComponent implements OnInit, OnDestroy {
 
   @Input() feed: Feed;
   usuarioAutenticado: Usuario;
@@ -18,6 +18,7 @@ export class FeedItemComponent implements OnInit {
   dataCompartilhamentoDif: string;
   dataUltimaAlteracaoDif: string;
   temImagem: boolean;
+  interval;
 
   constructor(public usuarioService: UsuarioService,
               public feedService: FeedService,
@@ -26,6 +27,19 @@ export class FeedItemComponent implements OnInit {
 
   ngOnInit() {
       this.usuarioAutenticado = this.usuarioService.getUsuarioAutenticado();
+      this.interval = setInterval(() => {
+          this.atualizaDataDifs();
+      }, 1000);
+      this.atualizaTemImagem();
+  }
+
+  ngOnDestroy() {
+      if (this.interval) {
+          clearInterval(this.interval);
+      }
+  }
+
+  atualizaDataDifs() {
       if (typeof this.feed !== 'undefined') {
           if (this.feed.dataCriacao != null && typeof this.feed.dataCriacao !== 'undefined') {
             this.dataCriacaoDif = this.calculateDataDif(this.feed.dataCriacao.toString());
@@ -42,15 +56,21 @@ export class FeedItemComponent implements OnInit {
           } else {
             this.dataCompartilhamentoDif = "";
           }
+      } else {
+          this.dataCriacaoDif = "";
+          this.dataCompartilhamentoDif = "";
+      }
+  }
+
+  atualizaTemImagem() {
+      if (typeof this.feed !== 'undefined') {
           if (typeof this.feed.imagem === 'undefined' || this.feed.imagem === '') {
             this.temImagem = false;
           } else {
             this.temImagem = true;
           }
       } else {
-        this.dataCriacaoDif = "";
-        this.dataCompartilhamentoDif = "";
-        this.temImagem = false;
+          this.temImagem = false;
       }
   }
 
