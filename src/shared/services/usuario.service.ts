@@ -69,6 +69,9 @@ export class UsuarioService {
                 localStorage.setItem('usuarios', JSON.stringify(this.usuarios));
                 this.usuariosAlterados.next(this.usuarios.slice());
                 this.salvarUsuarioMessage.next({success: true, message: 'Usuário salvo com sucesso.', error: null});
+                if (this.usuarioAutenticado.email === usuarioASalvar.email) {
+                    this.setUsuarioAutenticado(usuarioASalvar);
+                }
             } else {
                 this.salvarUsuarioMessage.next({success: false, message: null, error: 'salvar-usuario/usuario-nao-encontrado'});
             }
@@ -99,6 +102,11 @@ export class UsuarioService {
     getUsuarioAutenticado(): Usuario {
         this.usuarioAutenticado = localStorage.getItem('usuarioAutenticado') === null ? null : JSON.parse(localStorage.getItem('usuarioAutenticado'));
         return this.usuarioAutenticado;
+    }
+
+    setUsuarioAutenticado(usuario: Usuario) {
+        this.usuarioAutenticado = usuario;
+        localStorage.setItem('usuarioAutenticado', JSON.stringify(usuario));
     }
 
     getUsuarios(): Usuario[] {
