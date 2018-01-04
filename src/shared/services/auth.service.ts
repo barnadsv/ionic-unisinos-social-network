@@ -59,6 +59,9 @@ export class AuthService {
                                     error => this.registroMessage.next({success: false, message: null, error: error.code})
                                 )
                         })
+                        .catch(
+                            error => console.log(error)
+                        )
                 }
             )
             .catch(
