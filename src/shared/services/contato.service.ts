@@ -8,7 +8,6 @@ import { UsuarioService } from './usuario.service';
 
 import { Usuario } from '../models/usuario.interface';
 import { Contato } from '../models/contato.interface';
-import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class ContatoService {
@@ -31,13 +30,13 @@ export class ContatoService {
             this.contatos = null;
         }
 
-        // this.contatos = typeof this.usuarioService.getUsuarioAutenticado() !== 'undefined'? this.usuarioService.getUsuarioAutenticado().contatos : [];
         this.subscription = this.usuarioService.usuarioAutenticadoAlterado.subscribe(
             (usuario: Usuario) => {
-                this.contatos = usuario !== null ? usuario.contatos : [];
+                this.contatos = usuario !== null || typeof this.contatos === 'undefined' ? usuario.contatos : [];
             }
         );
-        if (this.contatos === null) {
+        
+        if (this.contatos === null || typeof this.contatos === 'undefined') {
             this.contatos = [];
         }
     }

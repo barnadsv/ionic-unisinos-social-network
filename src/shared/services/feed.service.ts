@@ -157,7 +157,7 @@ export class FeedService {
         //     self.usuarioAutenticado = usuarioAutenticado
         // })
 
-        if (preFeeds !== null && typeof this.usuarioAutenticado !== 'undefined') {
+        if (preFeeds !== null && typeof this.usuarioAutenticado !== 'undefined' && this.usuarioAutenticado !== null) {
             this.feeds = preFeeds.filter
             ( feed => feed.privado === false ||
                 ( feed.privado === true &&

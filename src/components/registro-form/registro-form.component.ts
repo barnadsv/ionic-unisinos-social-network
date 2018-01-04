@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 import { Conta } from '../../shared/models/conta.interface';
 
-import { UsuarioService } from '../../shared/services/usuario.service';
 import { NavController } from 'ionic-angular/navigation/nav-controller';
 import { AuthService } from '../../shared/services/auth.service';
 
@@ -15,8 +14,7 @@ export class RegistroFormComponent implements OnInit {
   @Output() registroStatus: EventEmitter<{success: Boolean, message: string, error: string}>;
   conta = {} as Conta;
   
-  constructor(private usuarioService: UsuarioService,
-              private authService: AuthService,
+  constructor(private authService: AuthService,
               private navCtrl: NavController) { 
     this.registroStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
   }

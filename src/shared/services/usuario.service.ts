@@ -11,11 +11,12 @@ import { Subject } from 'rxjs/Subject';
 import { Usuario } from '../models/usuario.interface';
 import { AngularFireObject } from 'angularfire2/database';
 import { Observable } from 'rxjs/Observable';
+import { AngularFireList } from 'angularfire2/database/interfaces';
 
 @Injectable()
 export class UsuarioService {
 
-    private usuariosRef = this.db.list<Usuario>('usuarios');
+    public usuariosRef: AngularFireList<Usuario>;
     private usuarios: Observable<Usuario[]>;
 
     private usuarioRef: AngularFireObject<any>;
@@ -31,6 +32,7 @@ export class UsuarioService {
     usuarioAutenticadoAlterado = new Subject<Usuario>();
 
     constructor(private db: AngularFireDatabase, private afAuth: AngularFireAuth) {
+        this.usuariosRef = this.db.list<Usuario>('usuarios');
         afAuth.authState.subscribe(usuario => {
             if (usuario) {
                 this.usuarios = this.usuariosRef
@@ -185,6 +187,9 @@ export class UsuarioService {
 
     getUsuarioAutenticado(): Usuario {
         //this.usuarioAutenticado = localStorage.getItem('usuarioAutenticado') === null ? null : JSON.parse(localStorage.getItem('usuarioAutenticado'));
+        if (this.usuarioAutenticado === null || typeof this.usuarioAutenticadoAlterado === 'undefined') {
+            this.carregaUsuario();
+        }
         return this.usuarioAutenticado;
     }
 
@@ -195,13 +200,15 @@ export class UsuarioService {
 
     carregaUsuario() {
         // var self = this;
-        let encodedEmail = this.encodeEmail(this.afAuth.auth.currentUser.email);
-        this.usuarioRef = this.db.object('usuarios/' + encodedEmail);
-        this.usuarioRef.valueChanges().subscribe(usuarioAutenticado => {
-            this.usuarioAutenticado = usuarioAutenticado;
-            this.usuarioAutenticadoAlterado.next(usuarioAutenticado);
-        })
-
+        let user = this.afAuth.auth.currentUser;
+        if (user !== null) {
+            let encodedEmail = this.encodeEmail(user.email);
+            this.usuarioRef = this.db.object('usuarios/' + encodedEmail);
+            this.usuarioRef.valueChanges().subscribe(usuarioAutenticado => {
+                this.usuarioAutenticado = usuarioAutenticado;
+                this.usuarioAutenticadoAlterado.next(usuarioAutenticado);
+            })
+        }
     }
 
     encodeEmail(userEmail: string) {

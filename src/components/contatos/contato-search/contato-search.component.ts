@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -12,7 +12,7 @@ import { UsuarioService } from '../../../shared/services/usuario.service';
     selector: 'app-contato-search',
     templateUrl: './contato-search.component.html'
 })
-export class ContatoSearchComponent implements OnInit {
+export class ContatoSearchComponent implements OnInit, OnDestroy {
 
     @Output() adicionarContatoStatus: EventEmitter<{success: Boolean, message: string, error: string}>;
     termoDigitado = '';
@@ -59,6 +59,10 @@ export class ContatoSearchComponent implements OnInit {
                 this.searchTerm(this.termoDigitado);
             }
         );
+    }
+
+    ngOnDestroy() {
+        this.subscription.unsubscribe();
     }
 
     searchTerm(value) {

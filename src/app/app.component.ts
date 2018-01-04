@@ -6,6 +6,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../shared/services/auth.service';
 import { UsuarioService } from '../shared/services/usuario.service';
 import { FeedService } from '../shared/services/feed.service';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 @Component({
   templateUrl: 'app.html'
@@ -17,7 +18,8 @@ export class MyApp {
 
     pages: Array<{title: string, component: string}>;
 
-    constructor(public platform: Platform, 
+    constructor(private db: AngularFireDatabase,
+                public platform: Platform, 
                 public statusBar: StatusBar, 
                 public splashScreen: SplashScreen,
                 private auth: AuthService,
@@ -73,6 +75,7 @@ export class MyApp {
     }
 
     logout() {
+      this.db.database.goOffline();
       this.auth.sair();
     }
 
