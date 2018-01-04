@@ -8,11 +8,13 @@ import { UsuarioService } from './usuario.service';
 
 import { Usuario } from '../models/usuario.interface';
 import { Contato } from '../models/contato.interface';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class ContatoService {
 
     private contatos: Contato[];
+    
     adicionarContatoMessage = new Subject<{success: boolean, message: string, error: any}>();
     apagarContatoMessage = new Subject<{success: boolean, message: string, error: any}>();
     contatosAlterados = new Subject<Contato[]>();
@@ -20,11 +22,15 @@ export class ContatoService {
 
     constructor(private authService: AuthService,
                 private usuarioService: UsuarioService) {
-        if (typeof this.usuarioService.getUsuarioAutenticado() !== 'undefined'){
-            this.contatos = this.usuarioService.getUsuarioAutenticado().contatos;
+
+        let usuarioAutenticado = this.usuarioService.getUsuarioAutenticado();
+        
+        if (typeof usuarioAutenticado !== 'undefined'){
+            this.contatos = usuarioAutenticado.contatos;
         } else {
             this.contatos = null;
         }
+
         // this.contatos = typeof this.usuarioService.getUsuarioAutenticado() !== 'undefined'? this.usuarioService.getUsuarioAutenticado().contatos : [];
         this.subscription = this.usuarioService.usuarioAutenticadoAlterado.subscribe(
             (usuario: Usuario) => {
@@ -43,7 +49,8 @@ export class ContatoService {
                 this.contatos.push(novoContato);
                 const usuario = this.usuarioService.getUsuarioAutenticado();
                 usuario.contatos = this.contatos;
-                this.usuarioService.salvarUsuario(usuario);
+                let encodedEmail = this.usuarioService.encodeEmail(usuario.email);
+                this.usuarioService.salvarUsuario(usuario, encodedEmail);
                 this.contatosAlterados.next(this.contatos.slice());
                 this.adicionarContatoMessage.next({success: true, message: 'Contato adicionado com sucesso.', error: null});
             } else {
@@ -62,7 +69,8 @@ export class ContatoService {
                     this.contatos.splice(indice, 1);
                     const usuario = this.usuarioService.getUsuarioAutenticado();
                     usuario.contatos = this.contatos;
-                    this.usuarioService.salvarUsuario(usuario);
+                    let encodedEmail = this.usuarioService.encodeEmail(usuario.email);
+                    this.usuarioService.salvarUsuario(usuario, encodedEmail);
                     this.contatosAlterados.next(this.contatos.slice());
                     this.apagarContatoMessage.next({success: true, message: 'Contato removido com sucesso.', error: null});
                 } else {

@@ -25,38 +25,39 @@ export class MyApp {
                 private feedService: FeedService,
                 private alertCtrl: AlertController) {
 
-      this.initializeApp();
+        this.initializeApp();
 
-      // Mudando a cor de fundo e a cor do texto do status bar
-      this.statusBar.backgroundColorByHexString('#bcbdfc');
-      this.statusBar.styleDefault();
-      
-      // used for an example of ngFor and navigation
-      this.pages = [
-        // { title: 'Login', component: 'LoginPage' },
-        // { title: 'Registro', component: 'RegistroPage' },
-        { title: 'Feeds', component: 'FeedsPage' },
-        { title: 'Contatos', component: 'ContatosPage' },
-        { title: 'Perfil', component: 'PerfilEditPage' },
-        { title: 'Logout', component: 'LoginPage' },
-        { title: 'Resetar Dados', component: 'LoginPage'}
-      ];
+        // Mudando a cor de fundo e a cor do texto do status bar
+        this.statusBar.backgroundColorByHexString('#bcbdfc');
+        this.statusBar.styleDefault();
+        
+        // used for an example of ngFor and navigation
+        this.pages = [
+            // { title: 'Login', component: 'LoginPage' },
+            // { title: 'Registro', component: 'RegistroPage' },
+            { title: 'Feeds', component: 'FeedsPage' },
+            { title: 'Contatos', component: 'ContatosPage' },
+            { title: 'Perfil', component: 'PerfilEditPage' },
+            { title: 'Logout', component: 'LoginPage' },
+            { title: 'Resetar Dados', component: 'LoginPage'}
+        ];
 
-      if (!this.auth.isAutenticado()) {
-          this.rootPage = 'LoginPage';
-      } else {
-          this.rootPage = 'FeedsPage';
-      };
+        if (!this.auth.isAutenticado()) {
+            this.rootPage = 'LoginPage';
+        } else {
+            this.rootPage = 'FeedsPage';
+        };
 
     }
 
     initializeApp() {
-      this.platform.ready().then(() => {
-        // Okay, so the platform is ready and our plugins are available.
-        // Here you can do any higher level native things you might need.
-        this.statusBar.styleDefault();
-        this.splashScreen.hide();
-      });
+        this.platform.ready().then(() => {
+            // Okay, so the platform is ready and our plugins are available.
+            // Here you can do any higher level native things you might need.
+            this.statusBar.styleDefault();
+            this.splashScreen.hide();
+        
+        });
     }
 
     openPage(page) {
@@ -72,7 +73,7 @@ export class MyApp {
     }
 
     logout() {
-      this.usuarioService.logout();
+      this.auth.sair();
     }
 
     resetarDados() {
@@ -84,16 +85,15 @@ export class MyApp {
                     text: 'Cancelar',
                     role: 'cancel',
                     handler: () => {
-                        console.log('Cancel clicked');
+                         console.log('Cancel clicked');
                     }
                 },
                 {
                     text: 'Remover',
                     handler: () => {
-                      this.feedService.apagarFeeds();
-                      this.usuarioService.apagarUsuarios();
-                      this.usuarioService.apagarUsuarioAutenticado();
-                      this.auth.apagarAutenticacao();
+                        this.feedService.apagarFeeds();
+                        this.usuarioService.apagarUsuarios();
+                        this.auth.sair();
                     }
                 }
             ]

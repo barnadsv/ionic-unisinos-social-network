@@ -23,7 +23,7 @@
       <div padding *ngIf="email.invalid && email.dirty">
         <span class="global__input-error">E-mail não é válido.</span>
       </div>
-      <ion-item>
+      <!-- <ion-item>
         <ion-label floating>Senha</ion-label>
         <ion-input 
           [(ngModel)]="conta.senha" 
@@ -32,10 +32,10 @@
           #senha="ngModel" 
           required 
           pattern="[a-zA-Z0-9!@#$%^&*]{6,20}$"></ion-input>
-      </ion-item>
-      <div padding *ngIf="senha.invalid && senha.dirty">
+      </ion-item> -->
+      <!-- <div padding *ngIf="senha.invalid && senha.dirty">
         <span class="global__input-error">A senha deve ter de 6 a 20 caracteres.</span>
-      </div>
+      </div> -->
     </ion-card-content>
     <ion-row class="registro-form__button">
       <button ion-button color="secondary" (click)="navigateToLoginPage()">Login</button>

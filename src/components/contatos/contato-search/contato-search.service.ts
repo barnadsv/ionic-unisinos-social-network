@@ -21,7 +21,10 @@ export class ContatoSearchService implements OnDestroy {
     termoBusca = '';
 
     constructor(private usuarioService: UsuarioService) {
-        this.usuarios = this.usuarioService.getUsuarios();
+        this.usuarioService.getUsuarios().subscribe(usuarios => {
+            this.usuarios = usuarios
+        })
+        // this.usuarios = this.usuarioService.getUsuarios();
         this.usuarioSubscription = this.usuarioService.usuariosAlterados.subscribe(
             (usuarios: Usuario[]) => {
                 this.usuarios = usuarios;

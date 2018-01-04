@@ -26,13 +26,22 @@ export class FeedsPage {
         this.navCtrl.push('FeedEditPage');
     }
 
-    ionViewCanEnter(): boolean{
-        if (this.auth.isAutenticado()) {
-            return true;
-        } else {
-            this.navCtrl.setRoot('LoginPage');
-            return false;
-        }
+    ionViewCanEnter() {
+        this.auth.isAutenticado()
+            .subscribe(usuario => {
+                if (usuario) {
+                    return true
+                } else {
+                    this.navCtrl.setRoot('LoginPage');
+                    return false
+                }
+            })
+        // if (this.auth.isAutenticado()) {
+        //     return true;
+        // } else {
+        //     this.navCtrl.setRoot('LoginPage');
+        //     return false;
+        // }
     }
 
     feedsAlterados(flag: boolean) {

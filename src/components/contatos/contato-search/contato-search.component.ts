@@ -41,7 +41,9 @@ export class ContatoSearchComponent implements OnInit {
         this.contatoSearchService.contatosEncontradosSubject
             .subscribe(resultados => {
                 const preResultados = resultados.filter(resultado => !this.contatos.find(contato => contato.email === resultado.email));
+
                 this.resultados = preResultados.filter(resultado => resultado.email !== this.usuarioService.getUsuarioAutenticado().email);
+                
                 // this.resultados = resultados.filter(function(resultado) {
                 //     return !this.contatos.find(function(contato) {
                 //         return contato.email === resultado.email;

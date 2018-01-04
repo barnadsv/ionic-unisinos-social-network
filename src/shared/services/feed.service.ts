@@ -18,6 +18,8 @@ export class FeedService {
     feedsAlterados = new Subject<Feed[]>();
     subscription: Subscription;
 
+    private usuarioAutenticado: Usuario;
+
     constructor(private authService: AuthService,
                 private usuarioService: UsuarioService) {
         if (authService.isAutenticado()) {
@@ -28,11 +30,13 @@ export class FeedService {
     salvarFeed(id: string, feedAlterado: Feed, compartilhado = false) {
         console.log(feedAlterado);
         if (this.authService.isAutenticado()) {
+            let usuarioAutenticado = this.usuarioService.getUsuarioAutenticado();
             if (id === '') {
                 id = this.guid();
                 if (compartilhado === false) {
                     feedAlterado.id = id;
-                    feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado();
+                    feedAlterado.usuario = usuarioAutenticado
+                    //feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado().subscribe(usuario => usuario);
                     feedAlterado.dataCriacao = new Date();
                 } else {
                     feedAlterado.idFeedOriginal = feedAlterado.id;
@@ -59,7 +63,8 @@ export class FeedService {
                 const indice = this.feeds.findIndex(feed => feed.id === id);
                 if (indice !== -1) {
                     feedAlterado.id = id;
-                    feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado();
+                    feedAlterado.usuario = usuarioAutenticado;
+                    //feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado();
                     feedAlterado.dataUltimaAtualizacao = new Date();
                     this.feeds[indice] = feedAlterado;
                     let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
@@ -144,16 +149,25 @@ export class FeedService {
     }
 
     preCarregarFeeds() {
+        let self = this;
         let preFeeds = JSON.parse(localStorage.getItem('feeds'));
-        if (preFeeds !== null) {
+        
+        this.usuarioAutenticado = this.usuarioService.getUsuarioAutenticado();
+        // this.usuarioService.getUsuarioAutenticado().subscribe(usuarioAutenticado => {
+        //     self.usuarioAutenticado = usuarioAutenticado
+        // })
+
+        if (preFeeds !== null && typeof this.usuarioAutenticado !== 'undefined') {
             this.feeds = preFeeds.filter
             ( feed => feed.privado === false ||
                 ( feed.privado === true &&
                     ( feed.usuario.contatos.findIndex
                         (
-                            contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
+                            contato => contato.email === self.usuarioAutenticado.email
+                            //contato => contato.email === this.usuarioService.getUsuarioAutenticado().subscribe(usuario => usuario.email)
                         ) > -1 ||
-                    feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+                    feed.usuario.email === self.usuarioAutenticado.email
+                    // feed.usuario.email === this.usuarioService.getUsuarioAutenticado().subscribe(usuario => usuario.email)
                     )
                 )
             );
@@ -165,15 +179,15 @@ export class FeedService {
             (usuario: Usuario) => {
                 if (usuario !== null) {
                     preFeeds = JSON.parse(localStorage.getItem('feeds'));
-                    if (preFeeds !== null) {
+                    if (preFeeds !== null && typeof this.usuarioAutenticado !== 'undefined') {
                         this.feeds = preFeeds.filter
                         ( feed => feed.privado === false ||
                             ( feed.privado === true &&
                                 ( feed.usuario.contatos.findIndex
                                     (
-                                        contato => contato.email === this.usuarioService.getUsuarioAutenticado().email
+                                        contato => contato.email === self.usuarioAutenticado.email
                                     ) > -1 ||
-                                feed.usuario.email === this.usuarioService.getUsuarioAutenticado().email
+                                feed.usuario.email === self.usuarioAutenticado.email
                                 )
                             )
                         );

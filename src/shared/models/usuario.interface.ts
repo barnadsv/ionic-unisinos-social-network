@@ -2,7 +2,7 @@ import { Contato } from './contato.interface';
 
 export interface Usuario {
     email: string;
-    senha: string;
+    //senha: string;
     nome?: string;
     contatos?: Contato[];
 }

@@ -4,6 +4,7 @@ import { Conta } from '../../shared/models/conta.interface';
 
 import { UsuarioService } from '../../shared/services/usuario.service';
 import { NavController } from 'ionic-angular/navigation/nav-controller';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-registro-form',
@@ -15,12 +16,13 @@ export class RegistroFormComponent implements OnInit {
   conta = {} as Conta;
   
   constructor(private usuarioService: UsuarioService,
+              private authService: AuthService,
               private navCtrl: NavController) { 
     this.registroStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
   }
 
   ngOnInit() {
-    this.usuarioService.registroMessage.subscribe(
+    this.authService.registroMessage.subscribe(
       (resposta) => {
         this.registroStatus.emit(resposta);
       }
@@ -29,9 +31,10 @@ export class RegistroFormComponent implements OnInit {
 
   registrar() {
     const email = this.conta.email;
-    const senha = this.conta.senha;
+    //const senha = this.conta.senha;
     const nome = this.conta.nome;
-    this.usuarioService.registrarUsuario(email, senha, nome);
+    this.authService.registrar(email, nome);
+    //this.usuarioService.registrarUsuario(email, senha, nome);
   }
 
   navigateToLoginPage() {
