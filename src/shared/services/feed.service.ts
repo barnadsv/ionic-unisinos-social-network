@@ -3,44 +3,96 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
+import * as firebase from 'firebase';
+
 import { AuthService } from './auth.service';
 import { UsuarioService } from './usuario.service';
 
 import { Feed } from '../models/feed.interface';
-import { Usuario } from '../models/usuario.interface';
+
+import { AngularFireList, AngularFireDatabase, AngularFireObject } from 'angularfire2/database';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Injectable()
 export class FeedService {
 
+    public feedsRef: AngularFireList<Feed>;
+    private feedRef: AngularFireObject<any>;
+    private feed: Feed;
+    private preFeeds: Feed[] = [];
     private feeds: Feed[] = [];
+
     salvarFeedMessage = new Subject<{success: boolean, message: string, error: any}>();
     apagarFeedMessage = new Subject<{success: boolean, message: string, error: any}>();
-    feedsAlterados = new Subject<Feed[]>();
+    feedsList = new Subject<Feed[]>();
+    feedsAlterados = new Subject();
     subscription: Subscription;
 
-    private usuarioAutenticado: Usuario;
-
-    constructor(private authService: AuthService,
+    constructor(private afAuth: AngularFireAuth,
+                private authService: AuthService,
+                private db: AngularFireDatabase,
                 private usuarioService: UsuarioService) {
-        if (authService.isAutenticado()) {
-            this.preCarregarFeeds();
-        }
+
+        this.feedsRef = this.db.list<Feed>('feeds');
+
+        this.afAuth.authState.subscribe(usuario => {
+            if (!usuario) {
+                this.feeds = [];
+            }
+            this.feedsList.next(this.feeds.slice());
+            this.feedsAlterados.next();
+        })
+
+    }
+
+    carregarFeeds() {
+        this.feedsRef
+            .snapshotChanges()
+            .map(changes => {
+                return changes.map(c => ({
+                    id: c.payload.key, ...c.payload.val()
+                }))
+            })
+            .subscribe(feeds => {
+                
+                this.preFeeds = feeds;
+                let user = this.afAuth.auth.currentUser;
+                
+                if (this.preFeeds !== null && user !== null) {
+                    this.feeds = this.preFeeds.filter
+                    ( feed => {
+                        if (typeof feed.usuario.contatos === 'undefined') {
+                            feed.usuario.contatos = [];
+                        }
+                        return feed.privado === false ||
+                        ( feed.privado === true &&
+                            ( (feed.usuario.contatos.length > 0 && feed.usuario.contatos.findIndex( contato => contato.email === user.email ) > -1) ||
+                                feed.usuario.email === user.email
+                            )
+                        )
+                    });
+                }
+                if (this.feeds === null) {
+                    this.feeds = [];
+                }
+
+                this.feeds = this.sortFeeds(this.feeds);
+                this.feedsList.next(this.feeds.slice());
+                this.feedsAlterados.next();
+                
+            });
     }
 
     salvarFeed(id: string, feedAlterado: Feed, compartilhado = false) {
-        console.log(feedAlterado);
         if (this.authService.isAutenticado()) {
             let usuarioAutenticado = this.usuarioService.getUsuarioAutenticado();
             if (id === '') {
-                id = this.guid();
                 if (compartilhado === false) {
-                    feedAlterado.id = id;
                     feedAlterado.usuario = usuarioAutenticado
-                    //feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado().subscribe(usuario => usuario);
-                    feedAlterado.dataCriacao = new Date();
+                    feedAlterado.dataCriacao = firebase.database.ServerValue.TIMESTAMP;
                 } else {
                     feedAlterado.idFeedOriginal = feedAlterado.id;
-                    feedAlterado.id = id;
+                    feedAlterado.dataCompartilhamento = firebase.database.ServerValue.TIMESTAMP;
                 }
                 if (typeof feedAlterado.privado === 'undefined') {
                     feedAlterado.privado = false;
@@ -48,42 +100,21 @@ export class FeedService {
                 if (typeof feedAlterado.compartilhar === 'undefined') {
                     feedAlterado.compartilhar = false;
                 }
-                // this.feeds.push(feedAlterado);
-                this.feeds.unshift(feedAlterado);
-                let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
-                if (todosFeeds === null) {
-                    todosFeeds = [];
-                }
-                todosFeeds.unshift(feedAlterado);
-                localStorage.setItem('feeds', JSON.stringify(todosFeeds));
-                this.feedsAlterados.next(this.feeds.slice());
+                this.feedsRef.push(feedAlterado);
                 const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
                 this.salvarFeedMessage.next({success: true, message: message, error: null});
             } else {
-                const indice = this.feeds.findIndex(feed => feed.id === id);
-                if (indice !== -1) {
-                    feedAlterado.id = id;
-                    feedAlterado.usuario = usuarioAutenticado;
-                    //feedAlterado.usuario = this.usuarioService.getUsuarioAutenticado();
-                    feedAlterado.dataUltimaAtualizacao = new Date();
-                    this.feeds[indice] = feedAlterado;
-                    let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
-                    if (todosFeeds !== null) {
-                        const idx = todosFeeds.findIndex(feed => feed.id === id);
-                        if (idx !== -1) {
-                            todosFeeds[idx] = feedAlterado;
-                            localStorage.setItem('feeds', JSON.stringify(todosFeeds));
-                            this.feedsAlterados.next(this.feeds.slice());
-                            this.salvarFeedMessage.next({success: true, message: 'Feed salvo com sucesso.', error: null});
-                        } else {
-                            this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/feed-nao-encontrado'});
-                        }
-                    } else {
-                        this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/feed-nao-encontrado'});
-                    }
-                } else {
-                    this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/feed-nao-encontrado'});
-                }
+                console.log(id);
+
+                feedAlterado.usuario = usuarioAutenticado;
+                feedAlterado.dataUltimaAtualizacao = firebase.database.ServerValue.TIMESTAMP;
+                this.feedsRef.update(id, feedAlterado)
+                    .then(ref => {
+                        this.salvarFeedMessage.next({success: true, message: 'Feed salvo com sucesso.', error: null});
+                    })
+                    .catch(error => {
+                        this.salvarFeedMessage.next({success: false, message: null, error: error.code});
+                    })
             }
         } else {
             this.salvarFeedMessage.next({success: false, message: null, error: 'salvar-feed/nao-autenticado'});
@@ -92,54 +123,41 @@ export class FeedService {
 
     apagarFeed(id: string) {
         if (this.authService.isAutenticado()) {
-            if (id !== null && id !== '') {
-                const indice = this.feeds.findIndex(feed => feed.id === id);
-                if (indice !== -1) {
-                    this.feeds.splice(indice, 1);
-                    let todosFeeds = JSON.parse(localStorage.getItem('feeds'));
-                    if (todosFeeds !== null) {
-                        const idx = todosFeeds.findIndex(feed => feed.id === id);
-                        if (idx !== -1) {
-                            todosFeeds.splice(idx, 1);
-                            localStorage.setItem('feeds', JSON.stringify(todosFeeds));
-                            this.feedsAlterados.next(this.feeds.slice());
-                            this.apagarFeedMessage.next({success: true, message: 'Feed removido com sucesso.', error: null});
-                        } else {
-                            this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
-                        }
-                    } else {
-                        this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
-                    }
-                } else {
-                    this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/feed-nao-encontrado'});
-                }
-            }
+            this.feedsRef.remove(id)
+                .then(ref => {
+                    this.apagarFeedMessage.next({success: true, message: 'Feed removido com sucesso.', error: null});
+                })
+                .catch(error => {
+                    this.apagarFeedMessage.next({success: false, message: null, error: error.code});
+                })
+
         } else {
             this.apagarFeedMessage.next({success: false, message: null, error: 'apagar-feed/nao-autenticado'});
         }
     }
-
+    
     apagarFeeds() {
         if (this.authService.isAutenticado()) {
-            localStorage.removeItem('feeds');
+            this.feedsRef.remove();
             this.feeds = [];
         }
     }
 
     getFeeds() {
+        this.carregarFeeds();
         if (this.authService.isAutenticado()) {
-            this.preCarregarFeeds();
-            return this.feeds.slice(); // slice faz uma nova cópia do array de feeds...
+            return this.feeds;
         } else {
             return null;
         }
     }
 
     getFeed(id: string): Feed {
+
         if (this.authService.isAutenticado()) {
-            const feedEncontrado = this.feeds.find(feed => feed.id === id);
-            if (typeof feedEncontrado !== 'undefined') {
-                return feedEncontrado;
+            const filteredFeeds = this.feeds.filter(feed => feed.id === id);
+            if (filteredFeeds.length === 1) {
+                return filteredFeeds[0];
             } else {
                 return null;
             }
@@ -148,56 +166,11 @@ export class FeedService {
         }
     }
 
-    preCarregarFeeds() {
-        let self = this;
-        let preFeeds = JSON.parse(localStorage.getItem('feeds'));
-        
-        this.usuarioAutenticado = this.usuarioService.getUsuarioAutenticado();
-        // this.usuarioService.getUsuarioAutenticado().subscribe(usuarioAutenticado => {
-        //     self.usuarioAutenticado = usuarioAutenticado
-        // })
-
-        if (preFeeds !== null && typeof this.usuarioAutenticado !== 'undefined' && this.usuarioAutenticado !== null) {
-            this.feeds = preFeeds.filter
-            ( feed => feed.privado === false ||
-                ( feed.privado === true &&
-                    ( feed.usuario.contatos.findIndex
-                        (
-                            contato => contato.email === self.usuarioAutenticado.email
-                            //contato => contato.email === this.usuarioService.getUsuarioAutenticado().subscribe(usuario => usuario.email)
-                        ) > -1 ||
-                    feed.usuario.email === self.usuarioAutenticado.email
-                    // feed.usuario.email === this.usuarioService.getUsuarioAutenticado().subscribe(usuario => usuario.email)
-                    )
-                )
-            );
-        }
-        if (this.feeds === null) {
-            this.feeds = [];
-        }
-        this.subscription = this.usuarioService.usuarioAutenticadoAlterado.subscribe(
-            (usuario: Usuario) => {
-                if (usuario !== null) {
-                    preFeeds = JSON.parse(localStorage.getItem('feeds'));
-                    if (preFeeds !== null && typeof this.usuarioAutenticado !== 'undefined') {
-                        this.feeds = preFeeds.filter
-                        ( feed => feed.privado === false ||
-                            ( feed.privado === true &&
-                                ( feed.usuario.contatos.findIndex
-                                    (
-                                        contato => contato.email === self.usuarioAutenticado.email
-                                    ) > -1 ||
-                                feed.usuario.email === self.usuarioAutenticado.email
-                                )
-                            )
-                        );
-                    }
-                }
-                if (this.feeds === null) {
-                    this.feeds = [];
-                }
-            }
-        );
+    carregaFeed(id: string) {
+        this.feedRef = this.db.object('feeds/' + id);
+        this.feedRef.valueChanges().subscribe(feed => {
+            this.feed = feed;
+        })
     }
 
     // Gerando uuid sem garantia de não colisão, apenas para usar em protótipo de app
@@ -208,6 +181,21 @@ export class FeedService {
             .substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+    }
+
+    sortFeeds(feeds: Feed[]): Feed[] {
+        feeds.sort(function (a, b) {
+        const data_a = a.dataCompartilhamento !== undefined ? a.dataCompartilhamento : a.dataCriacao;
+        const data_b = b.dataCompartilhamento !== undefined ? b.dataCompartilhamento : b.dataCriacao;
+        if (data_a > data_b) {
+            return -1;
+        }
+        if (data_a < data_b) {
+            return 1;
+        }
+        return 0;
+        });
+        return feeds;
     }
 
 }

@@ -7,6 +7,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { UsuarioService } from '../shared/services/usuario.service';
 import { FeedService } from '../shared/services/feed.service';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
   templateUrl: 'app.html'
@@ -18,7 +19,8 @@ export class MyApp {
 
     pages: Array<{title: string, component: string}>;
 
-    constructor(private db: AngularFireDatabase,
+    constructor(private afAuth: AngularFireAuth,
+                private db: AngularFireDatabase,
                 public platform: Platform, 
                 public statusBar: StatusBar, 
                 public splashScreen: SplashScreen,
@@ -44,11 +46,27 @@ export class MyApp {
             { title: 'Resetar Dados', component: 'LoginPage'}
         ];
 
-        if (!this.auth.isAutenticado()) {
-            this.rootPage = 'LoginPage';
-        } else {
-            this.rootPage = 'FeedsPage';
-        };
+        // this.auth.isAutenticado().subscribe(usuario => {
+        //     if (usuario) {
+        //         this.rootPage = 'LoginPage';
+        //     } else {
+        //         this.rootPage = 'FeedsPage';
+        //     }
+        // });
+
+        this.afAuth.authState.subscribe(usuario => {
+            if (usuario) {
+                this.rootPage = 'FeedsPage';
+            } else {
+                this.rootPage = 'LoginPage';
+            }
+        });
+
+        // if (!this.auth.isAutenticado()) {
+        //     this.rootPage = 'LoginPage';
+        // } else {
+        //     this.rootPage = 'FeedsPage';
+        // };
 
     }
 

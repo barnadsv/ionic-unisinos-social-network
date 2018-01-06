@@ -5,15 +5,15 @@ export interface Feed {
     titulo?: string;
     texto?: string;
     imagem?: string;
-    dataCriacao?: Date;
+    dataCriacao?: any;
     privado?: boolean;
     compartilhar?: boolean;
     usuario?: Usuario;
-    dataUltimaAtualizacao?: Date;
+    dataUltimaAtualizacao?: any;
     
     idFeedOriginal?: string;
     usuarioCompartilhou?: Usuario;
-    dataCompartilhamento?: Date;
+    dataCompartilhamento?: any;
 }
 
 // export class Feed {

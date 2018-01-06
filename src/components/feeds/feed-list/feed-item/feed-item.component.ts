@@ -5,6 +5,8 @@ import { UsuarioService } from '../../../../shared/services/usuario.service';
 import { FeedService } from '../../../../shared/services/feed.service';
 import { NavController } from 'ionic-angular/navigation/nav-controller';
 import { AlertController } from 'ionic-angular/components/alert/alert-controller';
+import { AngularFireAuth } from 'angularfire2/auth';
+// import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-feed-item',
@@ -20,13 +22,21 @@ export class FeedItemComponent implements OnInit, OnDestroy {
     temImagem: boolean;
     interval;
 
-    constructor(public usuarioService: UsuarioService,
+    constructor(private afAuth: AngularFireAuth,
+                public usuarioService: UsuarioService,
                 public feedService: FeedService,
                 private navCtrl: NavController,
                 private alertCtrl: AlertController) {}
 
     ngOnInit() {
-        this.usuarioAutenticado = this.usuarioService.getUsuarioAutenticado();
+        //this.usuarioAutenticado = this.usuarioService.getUsuarioAutenticado() === null ? {} as Usuario : this.usuarioService.getUsuarioAutenticado();
+        if (this.usuarioAutenticado === null) {
+            this.usuarioAutenticado = {} as Usuario;
+            let user = this.afAuth.auth.currentUser;
+            this.usuarioAutenticado.email = user.email;
+            this.usuarioAutenticado.nome = user.displayName;
+        }
+        
         this.interval = setInterval(() => {
             this.atualizaDataDifs();
         }, 1000);
@@ -42,17 +52,17 @@ export class FeedItemComponent implements OnInit, OnDestroy {
     atualizaDataDifs() {
         if (typeof this.feed !== 'undefined') {
             if (this.feed.dataCriacao != null && typeof this.feed.dataCriacao !== 'undefined') {
-                this.dataCriacaoDif = this.calculateDataDif(this.feed.dataCriacao.toString());
+                this.dataCriacaoDif = this.calculateDataDif(this.feed.dataCriacao);
             } else {
                 this.dataCriacaoDif = "";
             }
             if (this.feed.dataUltimaAtualizacao != null && typeof this.feed.dataUltimaAtualizacao !== 'undefined') {
-                this.dataUltimaAlteracaoDif = this.calculateDataDif(this.feed.dataUltimaAtualizacao.toString());
+                this.dataUltimaAlteracaoDif = this.calculateDataDif(this.feed.dataUltimaAtualizacao);
             } else {
                 this.dataUltimaAlteracaoDif = "";
             }
             if (this.feed.dataCompartilhamento != null && typeof this.feed.dataCompartilhamento !== 'undefined') {
-                this.dataCompartilhamentoDif = this.calculateDataDif(this.feed.dataCompartilhamento.toString());
+                this.dataCompartilhamentoDif = this.calculateDataDif(this.feed.dataCompartilhamento);
             } else {
                 this.dataCompartilhamentoDif = "";
             }
@@ -77,12 +87,12 @@ export class FeedItemComponent implements OnInit, OnDestroy {
     onCompartilhar(feed: Feed) {
         const novoFeed  = { ...feed };
         novoFeed.usuarioCompartilhou = this.usuarioAutenticado;
-        novoFeed.dataCompartilhamento = new Date();
+        //novoFeed.dataCompartilhamento = new Date();
         this.feedService.salvarFeed('', novoFeed, true);
     }
 
-    navigateToFeedEdit(feedId: string) {
-        this.navCtrl.push('FeedEditPage', { id: feedId });
+    navigateToFeedEdit(feed: Feed) {
+        this.navCtrl.push('FeedEditPage', { feed: feed });
     }
 
     deleteFeed(feedId: string) {
@@ -108,11 +118,12 @@ export class FeedItemComponent implements OnInit, OnDestroy {
         alert.present();  
     }
 
-    calculateDataDif(data: string) {
+    calculateDataDif(data: any) {
         let dataDif = "";
         const dataHoje = new Date().getTime();
-        const dataCriacao = new Date(data).getTime();
-        let seconds: number = Math.floor((dataHoje - dataCriacao)/1000);
+        //const dataCriacao = new Date(data).getTime();
+        //let seconds: number = Math.floor((dataHoje - dataCriacao)/1000);
+        let seconds: number = Math.floor((dataHoje - data)/1000);
         let minutes = Math.floor(seconds/60);
         let hours = Math.floor(minutes/60);
         let days = Math.floor(hours/24);

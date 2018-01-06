@@ -27,21 +27,31 @@ export class FeedsPage {
     }
 
     ionViewCanEnter() {
-        this.auth.isAutenticado()
-            .subscribe(usuario => {
-                if (usuario) {
-                    return true
-                } else {
-                    this.navCtrl.setRoot('LoginPage');
-                    return false
-                }
-            })
-        // if (this.auth.isAutenticado()) {
-        //     return true;
-        // } else {
-        //     this.navCtrl.setRoot('LoginPage');
-        //     return false;
-        // }
+        // this.auth.isAutenticado().toPromise()
+        //     .then(usuario => {
+        //         if (usuario) {
+        //             return true
+        //         } else {
+        //             this.navCtrl.setRoot('LoginPage');
+        //             return false
+        //         }
+        //     })
+
+        // this.auth.isAutenticado().subscribe(usuario => {
+        //     if (usuario) {
+        //         return true
+        //     } else {
+        //         this.navCtrl.setRoot('LoginPage');
+        //         return false
+        //     }
+        // })
+
+        if (this.auth.isAutenticado()) {
+            return true;
+        } else {
+            this.navCtrl.setRoot('LoginPage');
+            return false;
+        }
     }
 
     feedsAlterados(flag: boolean) {

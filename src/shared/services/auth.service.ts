@@ -2,18 +2,32 @@ import { Injectable } from '@angular/core';
 
 import { AngularFireAuth } from 'angularfire2/auth';
 
-import { UsuarioService } from './usuario.service';
 import { Subject } from 'rxjs/Subject';
+
+import { UsuarioService } from './usuario.service';
+// import { Usuario } from '../models/usuario.interface';
 
 @Injectable()
 export class AuthService {
 
+    autenticado: boolean;
     loginMessage = new Subject<{success: boolean, message: string, error: any}>();
     registroMessage = new Subject<{success: boolean, message: string, error: any}>();
 
 
     constructor(private afAuth: AngularFireAuth,
-                private usuarioService: UsuarioService) {}
+                private usuarioService: UsuarioService) {
+
+        this.afAuth.authState.subscribe(usuario => {
+            if (usuario) {
+                this.autenticado = true;
+                console.log('Autenticou');
+            } else {
+                this.autenticado = false;
+                console.log('Saiu');
+            }
+        })
+    }
 
     // autenticar() {
     //     //this.autenticado = true;
@@ -23,7 +37,8 @@ export class AuthService {
     
 
     isAutenticado() {
-        return this.afAuth.authState;
+        // return this.afAuth.authState;
+
         // this.afAuth.authState.subscribe(usuario => {
         //     if (usuario) {
         //         return true
@@ -35,7 +50,7 @@ export class AuthService {
         // if (this.autenticado === false) {
         //     this.autenticado = localStorage.getItem('autenticado') === null ? false : true;
         // }
-        // return this.autenticado;
+        return this.autenticado;
     }
 
     // apagarAutenticacao() {
@@ -50,10 +65,13 @@ export class AuthService {
                 () => {
                     this.usuarioService.criarUsuario(email, nome)
                         .then(ref => {
-                            this.usuarioService.carregaUsuario();
+                            //this.usuarioService.carregaUsuario();
                             this.afAuth.auth.sendPasswordResetEmail(email)
                                 .then(
-                                    () => this.registroMessage.next({success: true, message: 'Usuário registrado com sucesso. Por favor, verifique seu e-mail para definir sua senha.', error: null})
+                                    () => {
+                                        this.registroMessage.next({success: true, message: 'Usuário registrado com sucesso. Por favor, verifique seu e-mail para definir sua senha.', error: null})
+                                        this.usuarioService.carregarUsuarioAutenticado();
+                                    }
                                 )
                                 .catch(
                                     error => this.registroMessage.next({success: false, message: null, error: error.code})
@@ -77,7 +95,7 @@ export class AuthService {
                         .then(
                             (token: string) => {
                                 this.loginMessage.next({success: true, message: "Login realizado com sucesso.", error: null});
-                                this.usuarioService.carregaUsuario();
+                                this.usuarioService.carregarUsuarioAutenticado();
                             }
                         )
                 }
