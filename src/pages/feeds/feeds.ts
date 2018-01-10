@@ -23,7 +23,7 @@ export class FeedsPage {
                 }
 
     onNovoFeed() {
-        this.navCtrl.push('FeedEditPage');
+        this.navCtrl.push('FeedEditPage', { feed: null });
     }
 
     ionViewCanEnter() {

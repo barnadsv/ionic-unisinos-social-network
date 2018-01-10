@@ -35,9 +35,16 @@
             <div padding *ngIf="imagem.invalid && imagem.dirty">
                 <span class="global__input-error">URL da imagem não é válida.</span>
             </div>
-            <img src={{imagem.value}}>
+            <img src={{imagem.value}}  *ngIf="this.feed.imagem">
+            <div>
+                <button float-right ion-button clear (click)="openGallery()">
+                    <ion-icon name="photos"></ion-icon>
+                </button>
+                <button float-right ion-button clear (click)="openCamera()">
+                    <ion-icon name="camera"></ion-icon>
+                </button>
+            </div>
             <ion-list>
-                
                 <ion-item>
                     <ion-label>Privado</ion-label>
                     <ion-checkbox name="privado" [(ngModel)]="feed.privado"></ion-checkbox>

@@ -30,7 +30,7 @@ export class FeedItemComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         //this.usuarioAutenticado = this.usuarioService.getUsuarioAutenticado() === null ? {} as Usuario : this.usuarioService.getUsuarioAutenticado();
-        if (this.usuarioAutenticado === null) {
+        if (this.usuarioAutenticado === null || typeof this.usuarioAutenticado === 'undefined') {
             this.usuarioAutenticado = {} as Usuario;
             let user = this.afAuth.auth.currentUser;
             this.usuarioAutenticado.email = user.email;

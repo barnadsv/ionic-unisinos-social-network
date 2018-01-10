@@ -97,9 +97,9 @@ export class FeedListComponent implements OnInit, OnDestroy {
         this.subscription.unsubscribe();
     }
 
-    onNovoFeed() {
-        this.navCtrl.push('FeedEditPage');
-    }
+    // onNovoFeed() {
+    //     this.navCtrl.push('FeedEditPage', { feed: null });
+    // }
 
     sortFeeds(feeds: Feed[]): Feed[] {
         feeds.sort(function (a, b) {
