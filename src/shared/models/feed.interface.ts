@@ -10,6 +10,7 @@ export interface Feed {
     compartilhar?: boolean;
     usuario?: Usuario;
     dataUltimaAtualizacao?: any;
+    origemImagem?: string;
     
     idFeedOriginal?: string;
     usuarioCompartilhou?: Usuario;

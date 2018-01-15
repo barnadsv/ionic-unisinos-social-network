@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
 
-import { NavController } from 'ionic-angular/navigation/nav-controller';
+// import { NavController } from 'ionic-angular/navigation/nav-controller';
 
 import { AngularFireAuth } from 'angularfire2/auth';
+import * as firebase from 'firebase';
 
 import { Subscription } from 'rxjs/Subscription';
 
@@ -22,11 +23,12 @@ export class FeedListComponent implements OnInit, OnDestroy {
     subscription: Subscription;
     preFeeds: Feed[];
     feeds: Feed[];
+    offset: number;
 
     usuarioAutenticado: Usuario;
     
     constructor(private feedService: FeedService,
-                private navCtrl: NavController,
+                // private navCtrl: NavController,
                 private afAuth: AngularFireAuth) { 
 
         this.apagarFeedStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
@@ -47,6 +49,12 @@ export class FeedListComponent implements OnInit, OnDestroy {
                 this.apagarFeedStatus.emit(resposta);
             }
         );
+
+        const self = this;
+        const starCountRef = firebase.database().ref('.info/serverTimeOffset');
+        starCountRef.on('value', function(snapshot) {
+            self.offset = parseInt(snapshot.toJSON().toString());
+        });
 
     }
 

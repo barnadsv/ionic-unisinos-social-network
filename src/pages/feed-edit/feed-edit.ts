@@ -71,4 +71,22 @@ export class FeedEditPage {
         }
     }
 
+    message(resposta: {success: Boolean, message: string, error: string}) {
+        if (!resposta.success) {
+            if (resposta.error === 'file/not-found') {
+                this.toast.create({
+                    message: 'Arquivo não foi encontrado.',
+                    cssClass: 'toast-error',
+                    duration: 3000
+                }).present();
+            } else {
+                this.toast.create({
+                    message: resposta.error,
+                    cssClass: 'toast-error',
+                    duration: 3000
+                }).present();
+            }
+        }
+    }
+
 }

@@ -3,10 +3,16 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { File } from "@ionic-native/file";
+import { FilePath } from '@ionic-native/file-path';
+import { Camera  } from '@ionic-native/camera';
+import { FileTransfer } from "@ionic-native/file-transfer";
+import { ImageResizer } from '@ionic-native/image-resizer';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 
 import { MyApp } from './app.component';
 
@@ -39,7 +45,8 @@ const firebaseConfig = {
     }),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    AngularFireStorageModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -53,7 +60,12 @@ const firebaseConfig = {
     UsuarioService,
     ContatoService,
     ContatoSearchService,
-    FeedService
+    FeedService,
+    File,
+    FilePath,
+    FileTransfer,
+    Camera,
+    ImageResizer
   ]
 })
 export class AppModule {}

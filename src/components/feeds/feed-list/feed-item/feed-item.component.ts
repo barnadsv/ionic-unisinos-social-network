@@ -15,6 +15,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 export class FeedItemComponent implements OnInit, OnDestroy {
 
     @Input() feed: Feed;
+    @Input() offset: number;
     usuarioAutenticado: Usuario;
     dataCriacaoDif: string;
     dataCompartilhamentoDif: string;
@@ -120,7 +121,15 @@ export class FeedItemComponent implements OnInit, OnDestroy {
 
     calculateDataDif(data: any) {
         let dataDif = "";
-        const dataHoje = new Date().getTime();
+        const offset = this.offset;
+        // console.log(offset);
+        const dataHojeDispositivo = new Date().getTime();
+        // console.log(dataHojeDispositivo);
+        const dataHoje = dataHojeDispositivo + offset;
+        //const dataHoje = dataHojeDispositivo;
+        // const dataHojeAjustada = dataHoje + offset;
+        // console.log(dataHojeAjustada);
+        //console.log(dataH);
         //const dataCriacao = new Date(data).getTime();
         //let seconds: number = Math.floor((dataHoje - dataCriacao)/1000);
         let seconds: number = Math.floor((dataHoje - data)/1000);

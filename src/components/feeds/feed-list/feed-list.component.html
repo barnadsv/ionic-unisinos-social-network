@@ -1,6 +1,7 @@
 <ion-list>
     <app-feed-item 
         *ngFor="let feedEl of feeds" 
-        [feed]="feedEl">
+        [feed]="feedEl"
+        [offset]="offset">
     </app-feed-item>
 </ion-list>

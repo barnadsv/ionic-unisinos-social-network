@@ -101,7 +101,13 @@ export class AuthService {
                 }
             )
             .catch(
-                error => this.loginMessage.next({success: false, message: null, error: error.code})
+                error => {
+                    if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+                        this.loginMessage.next({success: false, message: null, error: "E-mail/Senha incorretos."})
+                    } else {
+                        this.loginMessage.next({success: false, message: null, error: error.code})
+                    }
+                }
             );
     }
 
