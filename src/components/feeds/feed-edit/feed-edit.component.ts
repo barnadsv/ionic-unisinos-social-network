@@ -8,8 +8,6 @@ import { FilePath } from '@ionic-native/file-path';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { File } from "@ionic-native/file";
 import { ImageResizer } from '@ionic-native/image-resizer';
-// import { PhotoLibrary } from '@ionic-native/photo-library';
-// import { FirebaseApp } from 'angularfire2';
 
 import { FeedService } from '../../../shared/services/feed.service';
 
@@ -28,6 +26,9 @@ export class FeedEditComponent implements OnInit {
     feed = {} as Feed;
     feedImage: any;
     nativeFilePath: string;
+    nativeUri: string;
+    originalImageWidth: number;
+    originalImageHeight: number;
 
     cameraOptions: CameraOptions = {
         quality: 100,
@@ -105,115 +106,211 @@ export class FeedEditComponent implements OnInit {
 
     openGallery (): void {
         console.log('open gallery');
-
-        // this.photoLibrary.requestAuthorization().then(() => {
-        //     this.photoLibrary.getLibrary().subscribe({
-        //       next: library => {
-        //         library.forEach(function(libraryItem) {
-        //           console.log(libraryItem.id);          // ID of the photo
-        //           console.log(libraryItem.photoURL);    // Cross-platform access to photo
-        //           console.log(libraryItem.thumbnailURL);// Cross-platform access to thumbnail
-        //           console.log(libraryItem.fileName);
-        //           console.log(libraryItem.width);
-        //           console.log(libraryItem.height);
-        //           console.log(libraryItem.creationDate);
-        //           console.log(libraryItem.latitude);
-        //           console.log(libraryItem.longitude);
-        //           console.log(libraryItem.albumIds);    // array of ids of appropriate AlbumItem, only of includeAlbumsData was used
-        //         });
-        //       },
-        //       error: err => { console.log('could not get photos'); },
-        //       complete: () => { console.log('done getting photos'); }
-        //     });
-        //   })
-        //   .catch(err => console.log('permissions weren\'t granted'));
-
-          this.camera.getPicture(this.photoLibraryOptions)
+        const self = this;
+        this.camera.getPicture(this.photoLibraryOptions)
             .then(file_uri => {
+
+                const nome_arquivo = file_uri.substring(file_uri.lastIndexOf('/') + 1);
+
                 this.nativeFilePath = file_uri;
                 if (this.platform.is('android')) {
                     this.filePath.resolveNativePath(file_uri)
                         .then(filePath => {
                             this.nativeFilePath = filePath;
-                            this.getFileEntry(this.nativeFilePath);
-                            //let currentName = file_uri.substring(file_uri.lastIndexOf('/') + 1, file_uri.lastIndexOf('?'));
+
+                            let file_size: number = 0;
+                            this.file.resolveLocalFilesystemUrl(filePath)
+                                .then(fileEntry => {
+
+                                    self.nativeUri = normalizeURL(fileEntry.nativeURL);
+                                    let localUri = '';
+                                    if (self.nativeUri.indexOf('file://') !== -1) {
+                                        localUri = self.nativeUri.replace('file://', '');
+                                    }
+                                    
+                                    this.getMeta(localUri, function(width, height) {
+                                        self.originalImageWidth = width;
+                                        self.originalImageHeight = height;
+                                        console.log('ORIGINAL file width: ' + width);
+                                        console.log('ORIGINAL file height: ' + height);
+                                        fileEntry.getMetadata(metadata => {
+                                            file_size = metadata.size;
+                                            console.log('ORIGINAL file size: '+ file_size);
+
+                                            let quality = self.getQuality(file_size);
+                                            let width = 0;
+                                            let height = 0;
+
+                                            if (self.originalImageWidth > 1200 || self.originalImageHeight > 1024) {
+                                                if (self.originalImageWidth > self.originalImageHeight) {
+                                                    width = 1200;
+                                                    height = Math.floor(self.originalImageHeight/self.originalImageWidth * 1200);
+                                                } else {
+                                                    height = 1024;
+                                                    width = Math.floor(self.originalImageWidth/self.originalImageHeight * 1024);
+                                                }
+                                                self.imageResizer.resize({
+                                                    uri: file_uri,
+                                                    quality: quality,
+                                                    width: width,
+                                                    height: height,
+                                                    fileName: nome_arquivo
+                                                }).then(uri => {
+                                                    self.getFileEntry(uri)
+                                                }, (err) => {
+                                                    console.log(err);
+                                                })
+                                            } else {
+                                                self.getFileEntry(self.nativeUri);
+                                            }
+
+                                        }, error => {
+                                            console.log(error);
+                                        })
+                                    });
+
+                            });
+
                         });
+
                 } else {
-                    this.getFileEntry(this.nativeFilePath);
-                    //var currentName = file_uri.substr(file_uri.lastIndexOf('/') + 1);
+
+                    let file_size: number = 0;
+                    this.file.resolveLocalFilesystemUrl(file_uri)
+                        .then(fileEntry => {
+
+                            this.getMeta(file_uri, function(width, height) {
+                                self.originalImageWidth = width;
+                                self.originalImageHeight = height;
+                                console.log('ORIGINAL file width: ' + width);
+                                console.log('ORIGINAL file height: ' + height);
+
+                                fileEntry.getMetadata(metadata => {
+                                    file_size = metadata.size;
+                                    console.log('ORIGINAL file size: '+ file_size);
+                                    
+                                    let quality = self.getQuality(file_size);
+                                    let width = 0;
+                                    let height = 0;
+
+                                    if (self.originalImageWidth > 1200 || self.originalImageHeight > 1024) {
+                                        if (self.originalImageWidth > self.originalImageHeight) {
+                                            width = 1200;
+                                            height = Math.floor(self.originalImageHeight/self.originalImageWidth * 1200);
+                                        } else {
+                                            height = 1024;
+                                            width = Math.floor(self.originalImageWidth/self.originalImageHeight * 1024);
+                                        }
+                                        self.imageResizer.resize({
+                                            uri: file_uri,
+                                            quality: quality,
+                                            width: width,
+                                            height: height,
+                                            fileName: nome_arquivo
+                                        }).then(uri => {
+                                            self.getFileEntry(uri)
+                                        }, (err) => {
+                                            console.log(err);
+                                        })
+                                    } else {
+                                        self.getFileEntry(file_uri);
+                                    }
+                                }, error => {
+                                    console.log(error);
+                                })
+                            });
+
+                    })
+
                 }
-                //this.getFileEntry(file_uri)
+
             }, (error) => console.log(error));
-        //   .then((imageData) => {
-        //       // imageData is either a base64 encoded string or a file URI
-        //       // If it's base64:
-        //       let base64Image = 'data:image/jpeg;base64,' + imageData;
-        //       this.feed.imagem = base64Image;
-        //       // console.log(this.feed.id);
-        //       // this.storeImage(base64Image);
-        //       //this.storageRef.getDownloadURL().subscribe(url => this.feed.imagem = url);
-        // }, (err) => {
-        //     console.log(err)
-        // });
     }
 
     openCamera (): void {
         console.log('open camera');
-
+        const self = this;
         this.camera.getPicture(this.cameraOptions)
             .then(file_uri => {
                 const nome_arquivo = file_uri.substring(file_uri.lastIndexOf('/') + 1);
 
+                this.getMeta(file_uri, function(width, height) {
+                    self.originalImageWidth = width;
+                    self.originalImageHeight = height;
+                    console.log('ORIGINAL file width: ' + width);
+                    console.log('ORIGINAL file height: ' + height);
+                });
+
                 let file_size: number = 0;
                 this.file.resolveLocalFilesystemUrl(file_uri)
                     .then(fileEntry => {
-                        fileEntry.getMetadata(metadata => {
-                            file_size = metadata.size;
-                            console.log('file size: '+ file_size);
-                        })
-                    })
 
-                this.imageResizer.resize({
-                    uri: file_uri,
-                    quality: 60,
-                    width: 1280,
-                    height: 1280,
-                    fileName: nome_arquivo
-                }).then(uri => {
-                    this.getFileEntry(uri)
-                }, (err) => {
-                    console.log(err)
+                        this.getMeta(file_uri, function(width, height) {
+                            self.originalImageWidth = width;
+                            self.originalImageHeight = height;
+                            console.log('ORIGINAL file width: ' + width);
+                            console.log('ORIGINAL file height: ' + height);
+
+                            fileEntry.getMetadata(metadata => {
+                                file_size = metadata.size;
+                                console.log('ORIGINAL file size: '+ file_size);
+                                
+                                let quality = self.getQuality(file_size);
+                                let width = 0;
+                                let height = 0;
+
+                                if (self.originalImageWidth > 1200 || self.originalImageHeight > 1024) {
+                                    if (self.originalImageWidth > self.originalImageHeight) {
+                                        width = 1200;
+                                        height = Math.floor(self.originalImageHeight/self.originalImageWidth * 1200);
+                                    } else {
+                                        height = 1024;
+                                        width = Math.floor(self.originalImageWidth/self.originalImageHeight * 1024);
+                                    }
+                                    self.imageResizer.resize({
+                                        uri: file_uri,
+                                        quality: quality,
+                                        width: width,
+                                        height: height,
+                                        fileName: nome_arquivo
+                                    }).then(uri => {
+                                        self.getFileEntry(uri);
+                                    }, (err) => {
+                                        console.log(err);
+                                    })
+                                } else {
+                                    self.getFileEntry(file_uri);
+                                }
+                            }, error => {
+                                console.log(error);
+                            });
+                        });
+
                 })
+
             });
-            // .then((imageData) => {
-            //     // imageData is either a base64 encoded string or a file URI
-            //     // If it's base64:
-            //     let base64Image = 'data:image/jpeg;base64,' + imageData;
-            //     this.feed.imagem = base64Image;
-            //     // console.log(this.feed.id);
-            //     // this.storeImage(base64Image);
-            //     //this.storageRef.getDownloadURL().subscribe(url => this.feed.imagem = url);
-            // }, (err) => {
-            //     console.log(err)
-            // });
     }
 
     getFileEntry(imageFileUri) {
         this.file.resolveLocalFilesystemUrl(imageFileUri)
             .then(fileEntry => {
+
+                fileEntry.getMetadata(metadata => {
+                    console.log('RESIZED file size: '+ metadata.size);
+                })
+
                 console.log('Normalized imageFileUri: ' + normalizeURL(imageFileUri));
                 console.log('Normalized fileEntry.nativeURL: ' + normalizeURL(fileEntry.nativeURL));
                 console.log('Normalized fileEntry.toInternalURL(): ' + normalizeURL(fileEntry.toInternalURL()))
-                //this.feed.imagem = normalizeURL(fileEntry.toInternalURL())
                 let nativeUri = normalizeURL(fileEntry.nativeURL);
                 if (nativeUri.indexOf('file://') !== -1) {
                     nativeUri = nativeUri.replace('file://', '');
                 }
-                // if (nativeUri.indexOf('content://') !== -1) {
-                //     nativeUri = nativeUri.replace('content://', '');
-                // }
+                this.getMeta(nativeUri, function(width, height) {
+                    console.log('RESIZED file width: ' + width);
+                    console.log('RESIZED file height: ' + height);
+                });
                 this.feed.imagem = normalizeURL(nativeUri);
-                //this.feedImage = this.sanitizer.bypassSecurityTrustUrl(this.feed.imagem);
             })
             .catch(error => {
                 console.log(error);
@@ -223,6 +320,51 @@ export class FeedEditComponent implements OnInit {
                     this.fileMessage.emit({success: false, message: null, error: error.code})
                 }
             });
+    }
+
+    getMeta(url, callback){  
+        if (url.indexOf('file://') !== -1) {
+            url = url.replace('file://', '');
+        }
+        let img = new Image();
+        img.addEventListener("load", function(){
+            callback(this.naturalWidth, this.naturalHeight)
+        });
+        img.src = url;
+    }
+
+    getQuality(fileSize) {
+        let quality = 100;
+        if (fileSize > 8000000) {
+            quality = 10;
+        } else if (fileSize > 7000000) {
+            quality = 20;
+        } else if (fileSize > 6000000) {
+            quality = 30;
+        } else if (fileSize > 5000000) {
+            quality = 40;
+        } else if (fileSize > 4000000) {
+            quality = 50;
+        } else if (fileSize > 3000000) {
+            quality = 60;
+        } else if (fileSize > 2000000) {
+            quality = 65;
+        } else if (fileSize > 1000000) {
+            quality = 70;
+        } else if (fileSize > 800000) {
+            quality = 75;
+        } else if (fileSize > 600000) {
+            quality = 80;
+        } else if (fileSize > 400000) {
+            quality = 85;
+        } else if (fileSize > 200000) {
+            quality = 90;
+        } else if (fileSize > 100000) {
+            quality = 95;
+        } else {
+            quality = 100;
+        }
+        return quality;
     }
 
 }

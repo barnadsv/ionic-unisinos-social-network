@@ -23,7 +23,7 @@ export class FeedListComponent implements OnInit, OnDestroy {
     subscription: Subscription;
     preFeeds: Feed[];
     feeds: Feed[];
-    offset: number;
+    offset: number = 0;
 
     usuarioAutenticado: Usuario;
     

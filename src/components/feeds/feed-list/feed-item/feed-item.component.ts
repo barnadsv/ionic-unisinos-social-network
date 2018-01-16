@@ -15,7 +15,24 @@ import { AngularFireAuth } from 'angularfire2/auth';
 export class FeedItemComponent implements OnInit, OnDestroy {
 
     @Input() feed: Feed;
-    @Input() offset: number;
+    //@Input() offset: number;
+
+    private _offset: number = 0;
+    get offset(): number {
+        // transform value for display
+        return this.offset;
+    }
+    @Input()
+    set offset(offset: number) {
+        //console.log('offset previous value: ', this._offset);
+        //console.log('offset new value: ', offset);
+        if (this._offset === 0) {
+            this._offset = offset;
+        } else {
+            console.log('Manteve o offset: '+ this._offset);
+        }
+    }
+
     usuarioAutenticado: Usuario;
     dataCriacaoDif: string;
     dataCompartilhamentoDif: string;
@@ -121,7 +138,7 @@ export class FeedItemComponent implements OnInit, OnDestroy {
 
     calculateDataDif(data: any) {
         let dataDif = "";
-        const offset = this.offset;
+        const offset = this._offset;
         // console.log(offset);
         const dataHojeDispositivo = new Date().getTime();
         // console.log(dataHojeDispositivo);

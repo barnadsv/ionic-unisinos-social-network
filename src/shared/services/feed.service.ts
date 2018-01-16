@@ -115,6 +115,7 @@ export class FeedService {
                 } else {
                     feedAlterado.idFeedOriginal = feedAlterado.id;
                     feedAlterado.dataCompartilhamento = firebase.database.ServerValue.TIMESTAMP;
+                    feedAlterado.usuarioCompartilhou.nome = usuarioAutenticado.nome;
                 }
                 if (typeof feedAlterado.privado === 'undefined') {
                     feedAlterado.privado = false;
@@ -128,40 +129,7 @@ export class FeedService {
                     this.feedId = newId;
                     this.feedStorageRef = this.afStorage.ref(`/imagens/`+ newId);
                     this.uploadImage(feedAlterado.imagem);
-                    //let imageData: any;
-                    //this.convertToDataURLviaCanvas(feedAlterado.imagem, "image/jpeg").then(base64 => imageData = base64);
-
-                    // this.uploadImage(feedAlterado.imagem).subscribe(url => {
-                    //     feedAlterado.imagem = url;
-                    //     this.feedsRef.update(newId, feedAlterado)
-                    //         .then(ref => {
-                    //             const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
-                    //             this.salvarFeedMessage.next({success: true, message: message, error: null});
-                    //         })
-                    //         .catch(error => {
-                    //             this.salvarFeedMessage.next({success: false, message: null, error: error.code});
-                    //         })
-                    // });
-                    
-                    //this.toDataURL(feedAlterado.imagem).then(data => imageData = data)
-                    //this.feedStorageRef.putString(imageData, 'base64', {contentType: 'image/jpeg'});
-                    //this.feedStorageRef.putString(feedAlterado.imagem, 'base64', {contentType: 'image/jpeg'});
-
-                    // this.feedStorageRef.getDownloadURL().subscribe(url => {
-                    //     feedAlterado.imagem = url;
-                    //     this.feedsRef.update(newId, feedAlterado)
-                    //         .then(ref => {
-                    //             const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
-                    //             this.salvarFeedMessage.next({success: true, message: message, error: null});
-                    //         })
-                    //         .catch(error => {
-                    //             this.salvarFeedMessage.next({success: false, message: null, error: error.code});
-                    //         })
-                    // });
-                    
-                }
-                // const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
-                // this.salvarFeedMessage.next({success: true, message: message, error: null});
+                 }
             } else {
                 console.log(id);
                 this.feedId = id;
@@ -172,35 +140,6 @@ export class FeedService {
                         //this.salvarFeedMessage.next({success: true, message: 'Feed salvo com sucesso.', error: null});
                         this.feedStorageRef = this.afStorage.ref(`/imagens/`+ id);
                         this.uploadImage(feedAlterado.imagem);
-                        //let imageData: any;
-                        //this.convertToDataURLviaCanvas(feedAlterado.imagem, "image/jpeg").then(base64 => imageData = base64);
-
-                        // this.uploadImage(feedAlterado.imagem).subscribe(url => {
-                        //     feedAlterado.imagem = url;
-                        //     this.feedsRef.update(id, feedAlterado)
-                        //         .then(ref => {
-                        //             const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
-                        //             this.salvarFeedMessage.next({success: true, message: message, error: null});
-                        //         })
-                        //         .catch(error => {
-                        //             this.salvarFeedMessage.next({success: false, message: null, error: error.code});
-                        //         })
-                        // });
-
-                        //this.toDataURL(this.feed.imagem).then(data => imageData = data)
-                        //this.feedStorageRef.putString(imageData, 'base64', {contentType: 'image/jpeg'});
-
-                        // this.feedStorageRef.getDownloadURL().subscribe(url => {
-                        //     feedAlterado.imagem = url;
-                        //     this.feedsRef.update(id, feedAlterado)
-                        //         .then(ref => {
-                        //             const message = compartilhado === true ? 'Feed compartilhado com sucesso' : 'Feed salvo com sucesso.';
-                        //             this.salvarFeedMessage.next({success: true, message: message, error: null});
-                        //         })
-                        //         .catch(error => {
-                        //             this.salvarFeedMessage.next({success: false, message: null, error: error.code});
-                        //         })
-                        // });
                         
                     })
                     .catch(error => {
@@ -292,30 +231,6 @@ export class FeedService {
     
 
     uploadImage(imageFileUri: any) {
-        // this.error = null;
-        // this.loading = this.loadingCtrl.create({
-        //   content: 'Uploading...'
-        // });
-    
-        // this.loading.present();
-
-        // if (this.platform.is('android') && sourceType === this.camera.PictureSourceType.PHOTOLIBRARY) {
-        //     this.filePath.resolveNativePath(imagePath)
-        //       .then(filePath => {
-        //         let correctPath = filePath.substr(0, filePath.lastIndexOf('/') + 1);
-        //         let currentName = imagePath.substring(imagePath.lastIndexOf('/') + 1, imagePath.lastIndexOf('?'));
-        //         this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-        //       });
-        //   } else {
-        //     var currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
-        //     var correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
-        //     this.copyFileToLocalDir(correctPath, currentName, this.createFileName());
-        //   }
-
-        // imageFileUri.resolveNativePath(imageFileUri)
-        //     .then(filePath => {
-        //         console.log(`filePath: ` + filePath)
-        //     });
         
         this.encodedImageFileUri = encodeURI(imageFileUri.toString())
 
@@ -362,33 +277,6 @@ export class FeedService {
                 });
         }
 
-        // if (imageFileUri.indexOf('http') === -1 || !this.platform.is('android')) {
-        //     if (this.platform.is('android')) {
-        //         imageFileUri = 'file://' + imageFileUri;
-        //         this.correctPath = 'file://' + this.correctPath;
-        //     } else {
-        //         imageFileUri = imageFileUri.replace('http://localhost:8080', '');
-        //         imageFileUri = 'file://' + imageFileUri;
-        //         this.correctPath = 'file://' + imageFileUri;
-        //     }
-        //     this.file.resolveLocalFilesystemUrl(imageFileUri)
-        //         .then(entry => (<FileEntry>entry).file(file => {
-        //             this.readFile(file);
-        //         }))
-        //         .catch(err => {
-        //             console.log(err)
-        //         });
-        // } else {
-        //     this.fileTransfer.download(this.encodedImageFileUri, this.file.externalDataDirectory + this.currentName, true)
-        //         .then((entry) => {
-        //             //console.log(entry);
-        //             (<FileEntry>entry).file(file => {
-        //                 this.readFile(file);
-        //             })
-        //         })
-        //         .catch(err => console.log(err));
-        // }
-       
     }
 
     readFile(file: any) {
@@ -414,40 +302,8 @@ export class FeedService {
                             });
                     }
                 }
-                // uploadTask.downloadURL().subscribe(url => {
-                //     console.log('executou downloadURL');
-                //     if (url === null) {
-                //         this.feedStorageRef.getDownloadURL()
-                //             .subscribe(url => {
-                //                 this.atualizarUrl(url);
-                //             }, error => {
-                //                 console.log(error);
-                //             });
-                //     } else {
-                //         this.atualizarUrl(url);
-                //     }
-                // })
             })
 
-            // this.storeImage(imgBlob).downloadURL().subscribe(url => {
-            //     if (url === null) {
-            //         this.feedStorageRef.getDownloadURL()
-            //             .subscribe(url => {
-            //                 this.atualizarUrl(url);
-            //             }, error => {
-            //                 console.log(error);
-            //             });
-            //     } else {
-            //         this.atualizarUrl(url);
-            //     }
-            // })
-                
-            
-        //   this.storeImage(imgBlob).downloadURL().subscribe(url => {
-        //       this.atualizarUrl(url);
-        //   });
-          //formData.append('file', imgBlob, file.name);
-          //this.postData(formData);
         };
         reader.readAsArrayBuffer(file);
     }
@@ -457,9 +313,6 @@ export class FeedService {
     }
     
     atualizarUrl(url: string) {
-        // if (this.correctPath.indexOf('http') === -1) {
-        //     this.file.removeFile(this.correctPath, this.currentName);
-        // }
         this.feed.imagem = url;
         this.feedsRef.update(this.feedId, this.feed)
             .then(ref => {
@@ -471,52 +324,4 @@ export class FeedService {
             })
     }
 
-    // convertToDataURLviaCanvas(url, outputFormat){
-    //     return new Promise((resolve, reject) => {
-    //     let img = new Image();
-    //     img.crossOrigin = 'Anonymous';
-    //     img.onload = () => {
-    //       let canvas = <HTMLCanvasElement> document.createElement('CANVAS'),
-    //         ctx = canvas.getContext('2d'),
-    //         dataURL;
-    //       canvas.height = img.height;
-    //       canvas.width = img.width;
-    //       ctx.drawImage(img, 0, 0);
-    //       dataURL = canvas.toDataURL(outputFormat);
-    //       resolve(dataURL);
-    //       canvas = null;
-    //     };
-    //     img.src = url;
-    //   });
-    // }
-
-    // toDataURL(url) {
-    //     return fetch(url)
-    //         .then((response)=> {
-    //           return response.blob();
-    //         })
-    //         .then(blob=> {
-    //           return URL.createObjectURL(blob);
-    //         });
-    // }
-
-    // getBase64Image(img) {
-    //     // Create an empty canvas element
-    //     var canvas = document.createElement("canvas");
-    //     canvas.width = img.width;
-    //     canvas.height = img.height;
-    
-    //     // Copy the image contents to the canvas
-    //     var ctx = canvas.getContext("2d");
-    //     ctx.drawImage(img, 0, 0);
-    
-    //     // Get the data-URL formatted image
-    //     // Firefox supports PNG and JPEG. You could check img.src to
-    //     // guess the original format, but be aware the using "image/jpg"
-    //     // will re-encode the image.
-    //     var dataURL = canvas.toDataURL("image/png");
-    
-    //     return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-    // }
-      
 }
