@@ -20,16 +20,20 @@ export class PerfilEditPage {
                 message: resposta.message,
                 cssClass: 'toast-success',
                 duration: 3000
-            }).present();
-            this.navCtrl.push('FeedsPage');
+            }).present().then(
+                () => this.navCtrl.push('FeedsPage')
+            );
+            //this.navCtrl.push('FeedsPage');
         } else {
             if (resposta.error === 'salvar-usuario/nao-autenticado') {
                 this.toast.create({
                     message: 'Usuário não está autenticado.',
                     cssClass: 'toast-error',
                     duration: 3000
-                }).present();
-                this.navCtrl.setRoot('LoginPage');
+                }).present().then(
+                    () => this.navCtrl.setRoot('LoginPage')
+                );
+                //this.navCtrl.setRoot('LoginPage');
             } else {
                 this.toast.create({
                     message: resposta.message,

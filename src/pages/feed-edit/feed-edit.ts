@@ -23,8 +23,10 @@ export class FeedEditPage {
                 message: resposta.message,
                 cssClass: 'toast-success',
                 duration: 3000
-            }).present();
-            this.navCtrl.push('FeedsPage');
+            }).present().then(
+                () => this.navCtrl.setRoot('FeedsPage')
+            );
+            //this.navCtrl.setRoot('FeedsPage');
         } else {
             if (resposta.error === 'salvar-feed/nao-autenticado') {
                 this.toast.create({

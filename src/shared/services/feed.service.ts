@@ -124,12 +124,25 @@ export class FeedService {
                     feedAlterado.compartilhar = false;
                 }
                 this.feed = feedAlterado;
-                const newId = this.feedsRef.push(feedAlterado).key;
-                if (newId !== null) {
-                    this.feedId = newId;
-                    this.feedStorageRef = this.afStorage.ref(`/imagens/`+ newId);
-                    this.uploadImage(feedAlterado.imagem);
-                 }
+
+                this.feedsRef.push(feedAlterado).then(
+                    (feed) => {
+                        if (feed.key !== null) {
+                            this.feedId = feed.key;
+
+                            if (compartilhado === true) {
+                                this.feed.id = feed.key;
+                                this.feedsRef.update(this.feedId, this.feed);
+                            }
+
+                            this.feedStorageRef = this.afStorage.ref(`/imagens/`+ this.feedId);
+                            this.uploadImage(feedAlterado.imagem);
+                        }
+                    }, 
+                    (error) => {
+                        console.log(error);
+                    }
+                )
             } else {
                 console.log(id);
                 this.feedId = id;

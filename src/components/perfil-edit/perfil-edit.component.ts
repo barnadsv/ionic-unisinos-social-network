@@ -33,7 +33,7 @@ export class PerfilEditComponent implements OnInit {
 
     onSubmit() {
         this.usuarioService.salvarUsuario(this.usuario, this.usuario.email);
-        this.navigateAway();
+        //this.navigateAway();
     }
 
     onCancel() {

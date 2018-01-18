@@ -20,32 +20,30 @@ export class FeedsPage {
                 private auth: AuthService,
                 private toast: ToastController) {
         
+        this.auth.registroMessage.subscribe(
+            (resposta) => {
+                if (resposta.success) {
+                    this.toast.create({
+                        message: resposta.message,
+                        cssClass: 'toast-success',
+                        duration: 3000
+                    }).present();
+                } else {
+                    this.toast.create({
+                        message: resposta.error,
+                        cssClass: 'toast-error',
+                        duration: 3000
+                    }).present();
                 }
+            }
+        );
+    }
 
     onNovoFeed() {
         this.navCtrl.push('FeedEditPage', { feed: null });
     }
 
     ionViewCanEnter() {
-        // this.auth.isAutenticado().toPromise()
-        //     .then(usuario => {
-        //         if (usuario) {
-        //             return true
-        //         } else {
-        //             this.navCtrl.setRoot('LoginPage');
-        //             return false
-        //         }
-        //     })
-
-        // this.auth.isAutenticado().subscribe(usuario => {
-        //     if (usuario) {
-        //         return true
-        //     } else {
-        //         this.navCtrl.setRoot('LoginPage');
-        //         return false
-        //     }
-        // })
-
         if (this.auth.isAutenticado()) {
             return true;
         } else {
@@ -68,8 +66,10 @@ export class FeedsPage {
                 message: resposta.message,
                 cssClass: 'toast-success',
                 duration: 3000
-            }).present();
-            this.navCtrl.setRoot('FeedsPage');
+            }).present().then(
+                () => this.navCtrl.setRoot('FeedsPage')
+            );
+            //this.navCtrl.setRoot('FeedsPage');
         } else {
             if (resposta.error === 'salvar-feed/nao-autenticado') {
                 this.toast.create({

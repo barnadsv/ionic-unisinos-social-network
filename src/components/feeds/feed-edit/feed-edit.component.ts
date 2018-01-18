@@ -3,6 +3,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { normalizeURL } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
+import { LoadingController, Loading } from 'ionic-angular';
+
 import { FilePath } from '@ionic-native/file-path';
 
 import { Camera, CameraOptions } from '@ionic-native/camera';
@@ -29,6 +31,7 @@ export class FeedEditComponent implements OnInit {
     nativeUri: string;
     originalImageWidth: number;
     originalImageHeight: number;
+    loading: Loading;
 
     cameraOptions: CameraOptions = {
         quality: 100,
@@ -59,14 +62,20 @@ export class FeedEditComponent implements OnInit {
                 private camera: Camera,
                 private file: File,
                 private filePath: FilePath,
-                private imageResizer: ImageResizer) { 
+                private imageResizer: ImageResizer,
+                public loadingCtrl: LoadingController) { 
+
+            this.loading = this.loadingCtrl.create({
+                content: ''
+            });
 
             this.salvarFeedStatus = new EventEmitter<{success: Boolean, message: string, error: string}>();
             this.fileMessage = new EventEmitter<{success: Boolean, message: string, error: string}>();
 
             this.feedService.salvarFeedMessage.subscribe(
                 (resposta) => {
-                this.salvarFeedStatus.emit(resposta);
+                    this.loading.dismiss();
+                    this.salvarFeedStatus.emit(resposta);
                 }
             );
 
@@ -88,12 +97,13 @@ export class FeedEditComponent implements OnInit {
     }
 
     onSubmit() {
+        this.loading.present();
         if (this.editMode) {
             this.feedService.salvarFeed(this.id, this.feed);
         } else {
             this.feedService.salvarFeed('', this.feed);
         }
-        this.navigateAway();
+        //this.navigateAway();
     }
 
     onCancel() {
@@ -245,7 +255,7 @@ export class FeedEditComponent implements OnInit {
                 this.file.resolveLocalFilesystemUrl(file_uri)
                     .then(fileEntry => {
 
-                        this.getMeta(file_uri, function(width, height) {
+                        this.getMeta(file_uri, (width, height) => {
                             self.originalImageWidth = width;
                             self.originalImageHeight = height;
                             console.log('ORIGINAL file width: ' + width);

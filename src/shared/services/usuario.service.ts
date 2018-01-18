@@ -89,7 +89,11 @@ export class UsuarioService {
 
     criarUsuario(email: string, nome: string) {
         let encodedEmail = this.encodeEmail(email);
-        return this.usuariosRef.set(encodedEmail, { email: email, nome: nome });
+        let usuarioACriar = {} as Usuario;
+        usuarioACriar.email = email;
+        usuarioACriar.nome = nome;
+        return this.usuariosRef.update(encodedEmail, usuarioACriar);
+        //return this.usuariosRef.update(encodedEmail, { email: email, nome: nome });
     }
 
     apagarUsuarios() {

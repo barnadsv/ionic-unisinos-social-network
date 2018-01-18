@@ -18,8 +18,10 @@ export class RegistroPage {
                 message: resposta.message,
                 cssClass: 'toast-success',
                 duration: 3000
-            }).present();
-            this.navCtrl.setRoot('FeedsPage');
+            }).present().then(
+               () => this.navCtrl.setRoot('FeedsPage')
+            );
+            //this.navCtrl.setRoot('FeedsPage');
         } else {
             if (resposta.error === 'auth/email-ja-cadastrado') {
                 this.toast.create({

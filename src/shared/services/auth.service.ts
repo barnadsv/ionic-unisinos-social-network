@@ -74,16 +74,22 @@ export class AuthService {
                                     }
                                 )
                                 .catch(
-                                    error => this.registroMessage.next({success: false, message: null, error: error.code})
+                                    error => {
+                                        this.registroMessage.next({success: false, message: null, error: error.code})
+                                    }
                                 )
                         })
                         .catch(
-                            error => console.log(error)
+                            error => {
+                                console.log(error)
+                            }
                         )
                 }
             )
             .catch(
-                error => this.registroMessage.next({success: false, message: null, error: error.message})
+                error => {
+                    this.registroMessage.next({success: false, message: null, error: error.message})
+                }
             )
     }
 
